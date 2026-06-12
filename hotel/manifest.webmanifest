@@ -1,0 +1,15 @@
+{
+  "name": "Mauka Lani Island Concierge",
+  "short_name": "Concierge",
+  "description": "Mauka Lani Beach Hotel — your personal island concierge. (Demo property by Kind Codex.)",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#cfeef5",
+  "theme_color": "#cfeef5",
+  "icons": [
+    { "src": "../icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,10 +1,13 @@
 /* Oʻahu Pathfinder service worker — app shell cache, offline-first. */
-const CACHE = 'oahu-pathfinder-v1.2.0';
+const CACHE = 'oahu-pathfinder-v1.3.0';
 const ASSETS = [
   './',
   './index.html',
   './qrcode.js',
   './manifest.webmanifest',
+  './hotel/',
+  './hotel/index.html',
+  './hotel/manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png',

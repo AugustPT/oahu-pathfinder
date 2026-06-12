@@ -60,6 +60,24 @@ Tablet setup checklist for kiosk use:
 4. For kiosk use (rideshare passengers): Settings → Accessibility → **Guided Access**,
    then triple-click the side button inside the app to lock it.
 
+## White-label hotel editions
+
+`hotel/` is a demo property edition — **Mauka Lani Beach Hotel** (fictional) — showing
+how the engine white-labels as a hotel concierge: hotel essentials (WiFi, breakfast,
+pool, checkout, parking), the hotel's partner picks with guest perks, and the full
+island guide underneath. All `tel:` and partner details in it are demo data.
+
+To spin up a new property:
+
+1. Copy the `hotel/` folder (e.g. to `surfjack/`).
+2. Edit the marked blocks at the top of its `index.html`: the `<title>`, `<h1>`,
+   tagline, and the `HOTEL LAYER` sections in `nodes` and `results` (front-desk phone,
+   hours, partner picks).
+3. Add the new folder's files to `ASSETS` in `sw.js` and bump the cache version.
+4. Push. The property lives at `/<folder>/` on the same site.
+
+Pitch tip: make a prospect's edition *before* the meeting — it takes minutes.
+
 ## Editing content
 
 All content lives in two plain objects near the top of the script in `index.html`:

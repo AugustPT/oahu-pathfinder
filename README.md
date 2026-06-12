@@ -34,6 +34,24 @@ branch `main`, root folder.
 HTTPS hosting is required for the service worker (offline mode) — both options above
 provide it automatically.
 
+## Kiosk mode (locked tablet / rideshare / lobby)
+
+**Triple-tap the logo** to toggle kiosk mode on or off (it persists on the device). While ON:
+
+- Tapping any external link or email shows a **QR code** instead of opening it — the
+  passenger scans it with their own phone, and the tablet never leaves the app.
+- The session **auto-resets to Home after 2 minutes idle** (saved items cleared), so the
+  next passenger starts fresh. A **🔄 Start over** button also appears in the header.
+- Long-press menus, text selection, and pinch-zoom are blocked.
+- The app asks the screen to stay awake (works on iOS 16.4+ over HTTPS).
+
+Tablet setup checklist for kiosk use:
+
+1. Settings → Display & Brightness → Auto-Lock → **Never**
+2. Settings → Accessibility → **Guided Access** → on, set a passcode
+3. Open the app from the home screen icon, triple-tap the logo (kiosk ON)
+4. Triple-click the side/top button → **Start** Guided Access
+
 ## Install on the iPad
 
 1. Open your deployed URL in Safari.

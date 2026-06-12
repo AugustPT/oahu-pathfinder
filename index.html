@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="description" content="Oʻahu Pathfinder — find the right next step on Oʻahu, whether you're a tourist, a business owner, or a local.">
 <meta name="theme-color" content="#cfeef5">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -324,6 +324,84 @@
     .btn, .photochip, .photochip .pcimg { transition: none; }
   }
 
+  /* ---------- kiosk mode ---------- */
+  body.kiosk, body.kiosk * {
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+  }
+  html, body { overscroll-behavior: none; }
+  #resetbtn {
+    display: none;
+    position: absolute; right: 14px; top: max(env(safe-area-inset-top), 14px);
+    border: none; background: rgba(255,255,255,.85);
+    color: var(--navy); font-size: 13px; font-weight: 600;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(27,58,107,.2);
+  }
+  body.kiosk #resetbtn { display: block; }
+  #qrmodal {
+    position: fixed; inset: 0; z-index: 50;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(10,25,50,.55); backdrop-filter: blur(4px);
+    padding: 24px;
+  }
+  #qrmodal.open { display: flex; }
+  .qrbox {
+    background: #fff; border-radius: 24px;
+    padding: 26px 26px 20px; max-width: 380px; width: 100%;
+    text-align: center;
+    box-shadow: 0 16px 50px rgba(0,0,0,.35);
+    animation: qrpop .22s cubic-bezier(.2,.7,.3,1.2);
+  }
+  @keyframes qrpop { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+  .qrbox h3 { font-size: 22px; margin-bottom: 4px; }
+  .qrbox .qrsub {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px; color: #3a5a86; margin-bottom: 14px;
+  }
+  .qrbox .qrsvg { display: flex; justify-content: center; margin-bottom: 8px; }
+  .qrbox .qrsvg svg { width: 230px; height: 230px; }
+  .qrbox .qrdomain {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 13px; color: #7a8aa5; word-break: break-all; margin-bottom: 14px;
+  }
+  .qrbox .qrdone {
+    width: 100%;
+    border: none; background: var(--navy); color: #fff;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 17px; font-weight: 600;
+    border-radius: 14px; padding: 14px; cursor: pointer;
+  }
+  .kcbox {
+    background: linear-gradient(135deg, #1b3a6b, #2a5fa8);
+    color: #fff; border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 10px;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 15px; line-height: 1.4;
+  }
+  .kcbox b { display: block; margin-bottom: 2px; font-size: 16px; }
+  .kcbox .kcbtn {
+    display: block; text-align: center;
+    background: #fff; color: var(--navy);
+    font-weight: 700; font-size: 15px;
+    text-decoration: none;
+    border-radius: 10px; padding: 11px;
+    margin-top: 10px;
+  }
+  #toast {
+    position: fixed; left: 50%; bottom: 110px; z-index: 60;
+    transform: translateX(-50%);
+    background: rgba(20,40,70,.92); color: #fff;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px; font-weight: 600;
+    padding: 12px 20px; border-radius: 999px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease;
+    max-width: 86vw; text-align: center;
+  }
+  #toast.show { opacity: 1; }
+
   footer.credit {
     text-align: center;
     font-family: -apple-system, 'Segoe UI', sans-serif;
@@ -347,7 +425,8 @@
 <div id="backdrop" aria-hidden="true"></div>
 
 <header>
-  <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="Oʻahu Pathfinder logo">
+  <button id="resetbtn" aria-label="Start a fresh session">🔄 Start over</button>
+  <svg class="logo" id="logotap" viewBox="0 0 100 100" role="img" aria-label="Oʻahu Pathfinder logo">
     <circle cx="50" cy="50" r="46" fill="#dff3f7"/>
     <circle cx="68" cy="30" r="12" fill="#f5c542"/>
     <path d="M14 62 Q35 30 56 56 Q70 42 88 60 L88 70 Q50 58 14 72 Z" fill="#4e9e4e"/>
@@ -375,6 +454,18 @@
   </div>
 </noscript>
 
+<div id="qrmodal" role="dialog" aria-modal="true" aria-label="Scan this code with your phone">
+  <div class="qrbox">
+    <h3 id="qrtitle">Open on your phone</h3>
+    <div class="qrsub">Point your phone's camera at this code</div>
+    <div class="qrsvg" id="qrsvg"></div>
+    <div class="qrdomain" id="qrdomain"></div>
+    <button class="qrdone" data-qrdone>Done</button>
+  </div>
+</div>
+<div id="toast" role="status"></div>
+
+<script src="qrcode.js"></script>
 <script>
 /* =========================================================
    CONFIG — shown in the footer of every screen.
@@ -383,7 +474,7 @@ const CONFIG = {
   ownerName: "Kind Codex",
   ownerContact: "August@kindcodex.com",
   ownerPitch: "Want one for your business?",
-  version: "1.1.0",
+  version: "1.2.0",
 };
 
 /* =========================================================
@@ -768,7 +859,7 @@ const results = {
     link: { label: "IRS EIN application →", url: "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number" }
   },
   ops: {
-    title: "Run Smoother", img: "images/shaveice.jpg", meta: "⚙️ Fix these in order",
+    title: "Run Smoother", img: "images/shaveice.jpg", kc: true, meta: "⚙️ Fix these in order",
     steps: [
       "Missed calls = missed money. Set up a missed-call auto-text: 'Sorry we missed you! Book here: [link]'.",
       "Online booking (Square, Calendly, etc.) so customers book at midnight when they think of you.",
@@ -792,7 +883,7 @@ const results = {
     link: { label: "Book SBDC advising →", url: "https://www.hisbdc.org" }
   },
   website: {
-    title: "5-Minute Website Audit", img: "images/sunset.jpg", meta: "🖥️ Test on your PHONE, not desktop",
+    title: "5-Minute Website Audit", img: "images/sunset.jpg", kc: true, meta: "🖥️ Test on your PHONE, not desktop",
     steps: [
       "Load your site on your phone. Slow = customers gone (most leave after 3 seconds).",
       "Can a stranger tell what you do + where you are + how to book within 5 seconds?",
@@ -804,7 +895,7 @@ const results = {
     link: { label: "Test your site speed →", url: "https://pagespeed.web.dev" }
   },
   reviews: {
-    title: "Reviews & Photos Engine", img: "images/shaveice.jpg", meta: "⭐ The #1 local ranking factor",
+    title: "Reviews & Photos Engine", img: "images/shaveice.jpg", kc: true, meta: "⭐ The #1 local ranking factor",
     steps: [
       "Get your short Google review link from your Business Profile dashboard.",
       "Ask at the happy moment — job done, meal finished, smile on face.",
@@ -817,7 +908,7 @@ const results = {
     link: { label: "Google Business Profile →", url: "https://google.com/business" }
   },
   leads: {
-    title: "Capture Leads Before They Leave", img: "images/food.jpg", meta: "🧲 Most visitors leave without calling",
+    title: "Capture Leads Before They Leave", img: "images/food.jpg", kc: true, meta: "🧲 Most visitors leave without calling",
     steps: [
       "Add one offer to your site: '$X off first visit' or 'Free quote in 24 hours'.",
       "Collect name + phone only. Every extra field costs you signups.",
@@ -829,7 +920,7 @@ const results = {
     link: { label: "Free advising: SBDC →", url: "https://www.hisbdc.org" }
   },
   followup: {
-    title: "Follow-Up System", img: "images/sunset.jpg", meta: "📨 Where the real money is",
+    title: "Follow-Up System", img: "images/sunset.jpg", kc: true, meta: "📨 Where the real money is",
     steps: [
       "Same day: thank-you text after every job/visit.",
       "Day 3: review ask with your direct link.",
@@ -867,7 +958,7 @@ const results = {
 
   /* ---- GBP by business type ---- */
   gbp_dentist: {
-    title: "Google Profile: Dentist", img: "images/lanikai.jpg", meta: "🦷 Patients search 'dentist near me' — win that",
+    title: "Google Profile: Dentist", img: "images/lanikai.jpg", kc: true, meta: "🦷 Patients search 'dentist near me' — win that",
     steps: [
       "Claim/verify at google.com/business. Category: 'Dentist' primary, add 'Cosmetic dentist' etc. as secondary.",
       "Add services with prices or 'call for quote': cleanings, whitening, implants, emergency.",
@@ -880,7 +971,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_contractor: {
-    title: "Google Profile: Contractor", img: "images/diamondhead.jpg", meta: "🔨 Reviews + photos win bids before you quote",
+    title: "Google Profile: Contractor", img: "images/diamondhead.jpg", kc: true, meta: "🔨 Reviews + photos win bids before you quote",
     steps: [
       "Claim profile. Primary category = your main trade (e.g., 'General contractor').",
       "Set your service AREA (towns you serve), not just an address.",
@@ -893,7 +984,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_restaurant: {
-    title: "Google Profile: Restaurant", img: "images/food.jpg", meta: "🍴 Your profile IS your menu now",
+    title: "Google Profile: Restaurant", img: "images/food.jpg", kc: true, meta: "🍴 Your profile IS your menu now",
     steps: [
       "Claim profile. Upload the FULL menu with prices — keep it current.",
       "Photos of your 5 best dishes, shot in daylight. These decide more visits than your sign.",
@@ -906,7 +997,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_salon: {
-    title: "Google Profile: Salon", img: "images/shaveice.jpg", meta: "✂️ Instagram gets likes, Google gets bookings",
+    title: "Google Profile: Salon", img: "images/shaveice.jpg", kc: true, meta: "✂️ Instagram gets likes, Google gets bookings",
     steps: [
       "Claim profile. Add every service with prices — people compare before booking.",
       "Connect online booking (Square, Booksy, etc.) so they book straight from Google.",
@@ -919,7 +1010,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_retail: {
-    title: "Google Profile: Retail Shop", img: "images/skyline.jpg", meta: "🛍️ Win 'open now near me' searches",
+    title: "Google Profile: Retail Shop", img: "images/skyline.jpg", kc: true, meta: "🛍️ Win 'open now near me' searches",
     steps: [
       "Claim profile. Exact hours, exact location pin (check the map pin yourself).",
       "Add products with photos — Google shows them in searches.",
@@ -1110,6 +1201,7 @@ function backRow() {
 function credit() {
   return `<footer class="credit">Built with aloha by <b>${esc(CONFIG.ownerName)}</b> · ${esc(CONFIG.ownerPitch)}
     <a href="mailto:${CONFIG.ownerContact}">${CONFIG.ownerContact}</a>
+    · <button class="linklike" data-appqr>📱 Get this app</button>
     · <button class="linklike" data-go="t/credits">Photo credits</button></footer>`;
 }
 
@@ -1124,6 +1216,14 @@ function drawNode(id, isHome) {
     ${isHome ? credit() : ""}
   </div>`;
   main.scrollTop = 0;
+}
+
+function kcOffer(title) {
+  const subject = encodeURIComponent("Help me with: " + title);
+  return `<div class="kcbox"><b>🌺 Kind Codex builds this for you</b>
+    Done-for-you setup — websites, Google profiles, review engines, lead capture &amp; follow-up systems for Oʻahu businesses.
+    <a class="kcbtn" href="mailto:${CONFIG.ownerContact}?subject=${subject}">✉️ ${CONFIG.ownerContact}</a>
+  </div>`;
 }
 
 function drawResult(id) {
@@ -1144,6 +1244,7 @@ function drawResult(id) {
         <ol>${r.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
         <div class="tip"><b>🤙 Local tip</b>${esc(r.tip)}</div>
         <div class="watch"><b>⚠️ Watch out</b>${esc(r.watch)}</div>
+        ${r.kc ? kcOffer(r.title) : ""}
         <a class="linkbtn" href="${r.link.url}" target="_blank" rel="noopener">${esc(r.link.label)}</a>
       </div>
     </article>
@@ -1249,8 +1350,112 @@ function render() {
   else { drawNode("root", true); syncNav("nav-home"); }
 }
 
+/* =========================================================
+   KIOSK MODE — for the locked tablet (Guided Access).
+   Toggle: triple-tap the logo. While ON:
+   - external links & emails show a QR code instead of opening
+   - session auto-resets to Home after 2 min of no touches
+   - "Start over" button appears in the header
+   - long-press, text selection, and pinch-zoom are blocked
+   - the screen is asked to stay awake (iOS 16.4+, HTTPS)
+   ========================================================= */
+const KIOSK_KEY = "op-kiosk";
+const IDLE_MS = 120000;
+
+function isKiosk() {
+  try { return localStorage.getItem(KIOSK_KEY) === "1"; } catch { return false; }
+}
+function setKiosk(on) {
+  try { on ? localStorage.setItem(KIOSK_KEY, "1") : localStorage.removeItem(KIOSK_KEY); } catch {}
+  applyKiosk();
+  pokeIdle();
+  toast(on ? "Kiosk mode ON — links show QR codes, session auto-resets"
+           : "Kiosk mode OFF — links open normally");
+}
+function applyKiosk() {
+  document.body.classList.toggle("kiosk", isKiosk());
+  if (isKiosk()) requestWake();
+}
+
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+function showQR(url, title) {
+  const qr = qrcode(0, "M");
+  qr.addData(url);
+  qr.make();
+  document.getElementById("qrsvg").innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  document.getElementById("qrtitle").textContent = title || "Open on your phone";
+  document.getElementById("qrdomain").textContent = url.replace(/^mailto:/, "").split("?")[0];
+  document.getElementById("qrmodal").classList.add("open");
+}
+function hideQR() { document.getElementById("qrmodal").classList.remove("open"); }
+
+function resetSession() {
+  setSaved([]);
+  hideQR();
+  if (location.hash === "#t/home" || location.hash === "") render();
+  else location.hash = "t/home";
+  main.scrollTop = 0;
+  toast("Fresh session — aloha! 🌺");
+}
+
+/* idle auto-reset (kiosk only) */
+let idleTimer;
+function pokeIdle() {
+  clearTimeout(idleTimer);
+  if (isKiosk()) idleTimer = setTimeout(resetSession, IDLE_MS);
+}
+["pointerdown", "keydown", "touchstart"].forEach((ev) =>
+  document.addEventListener(ev, pokeIdle, { passive: true }));
+
+/* keep the screen awake while in kiosk mode (best effort) */
+let wakeLock = null;
+async function requestWake() {
+  try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch {}
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && isKiosk()) requestWake();
+});
+
+/* triple-tap the logo to toggle kiosk mode */
+let logoTaps = [];
+document.getElementById("logotap").addEventListener("click", () => {
+  const now = Date.now();
+  logoTaps = logoTaps.filter((t) => now - t < 1200);
+  logoTaps.push(now);
+  if (logoTaps.length >= 3) { logoTaps = []; setKiosk(!isKiosk()); }
+});
+document.getElementById("resetbtn").addEventListener("click", resetSession);
+document.getElementById("qrmodal").addEventListener("click", (e) => {
+  if (e.target.id === "qrmodal") hideQR();
+});
+
+/* block long-press menus and pinch zoom in kiosk mode */
+document.addEventListener("contextmenu", (e) => { if (isKiosk()) e.preventDefault(); });
+document.addEventListener("gesturestart", (e) => { if (isKiosk()) e.preventDefault(); });
+
 /* event delegation */
 document.addEventListener("click", (e) => {
+  if (e.target.closest("[data-qrdone]")) { hideQR(); return; }
+  const appqr = e.target.closest("[data-appqr]");
+  if (appqr) {
+    showQR(location.origin + location.pathname, "Take this app with you");
+    return;
+  }
+  const a = e.target.closest("a[href]");
+  if (a && isKiosk() && /^(https?:|mailto:)/.test(a.getAttribute("href"))) {
+    e.preventDefault();
+    showQR(a.href, a.getAttribute("href").startsWith("mailto:")
+      ? "Email us from your phone" : "Open on your phone");
+    return;
+  }
   const go = e.target.closest("[data-go]");
   if (go) { location.hash = go.dataset.go; return; }
   const back = e.target.closest("[data-back]");
@@ -1264,6 +1469,8 @@ document.addEventListener("click", (e) => {
 });
 
 window.addEventListener("hashchange", render);
+applyKiosk();
+pokeIdle();
 render();
 
 /* offline support */

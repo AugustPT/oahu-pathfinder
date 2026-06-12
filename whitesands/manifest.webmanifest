@@ -1,0 +1,15 @@
+{
+  "name": "White Sands Hotel — Waikīkī Guide",
+  "short_name": "White Sands",
+  "description": "White Sands Hotel — your Waikīkī guide. Dining, pool, surf, and the best of Oʻahu.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#cfeef5",
+  "theme_color": "#cfeef5",
+  "icons": [
+    { "src": "../icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

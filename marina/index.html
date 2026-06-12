@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="description" content="Marina Hawaii Vacations — your Waikīkī stay guide. Check-in help, parking, laundry, beach & lagoon, food nearby, and property support.">
+<meta name="theme-color" content="#cfeef5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Concierge">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icon-192.png">
+<title>Marina Hawaii Vacations — Your Waikīkī Stay Guide</title>
+<style>
+  :root {
+    --teal:    #1aa7a7;
+    --green:   #4caf50;
+    --orange:  #f5a623;
+    --blue:    #2274b5;
+    --purple:  #8b6cc1;
+    --coral:   #f07057;
+    --navy:    #1b3a6b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; }
+  @supports (height: 100dvh) { html, body { height: 100dvh; } }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    color: var(--navy);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #cfeef5;
+  }
+
+  /* ---------- photo backdrop (fixed div: works on iOS where bg-attachment:fixed fails) ---------- */
+  #backdrop {
+    position: fixed; inset: 0; z-index: -1;
+    background: url('../images/bg.jpg') center / cover no-repeat;
+  }
+  #backdrop::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,.82) 0%,
+      rgba(255,255,255,.55) 16%,
+      rgba(231,247,252,.38) 45%,
+      rgba(250,243,227,.62) 100%);
+  }
+
+  /* ---------- header ---------- */
+  header {
+    text-align: center;
+    padding: max(env(safe-area-inset-top), 12px) 16px 8px;
+    flex-shrink: 0;
+  }
+  .logo { width: 56px; height: 56px; margin: 0 auto 2px; display: block;
+          filter: drop-shadow(0 2px 6px rgba(27,58,107,.25)); }
+  h1 { font-size: 28px; letter-spacing: 0.5px; text-shadow: 0 1px 0 rgba(255,255,255,.8); }
+  .tagline {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 13px; color: #2c4a74; margin-top: 1px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.7);
+  }
+  .divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin: 6px auto 0; width: 200px;
+    color: var(--coral); font-size: 14px;
+  }
+  .divider::before, .divider::after {
+    content: ""; flex: 1; height: 1px; background: rgba(27,58,107,.3);
+  }
+
+  /* ---------- main ---------- */
+  main {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 20px 24px;
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .question { text-align: center; font-size: 26px; margin: 8px 0 2px;
+              text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+  .sub {
+    text-align: center;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px; color: #2c4a74; margin-bottom: 14px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.6);
+  }
+  .sectionhead { font-size: 21px; margin: 18px 0 10px; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+
+  /* ---------- hero banner with slow zoom ---------- */
+  .hero {
+    position: relative; overflow: hidden;
+    height: 130px; border-radius: 22px;
+    margin-bottom: 14px;
+    box-shadow: 0 6px 20px rgba(27,58,107,.3);
+  }
+  .hero .heroimg {
+    position: absolute; inset: 0;
+    background-position: center; background-size: cover;
+    animation: kenburns 18s ease-in-out infinite alternate;
+  }
+  .hero .heroshade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,30,60,0) 30%, rgba(10,30,60,.62) 100%);
+  }
+  .hero .herotitle {
+    position: absolute; left: 18px; right: 18px; bottom: 12px;
+    color: #fff; font-size: 26px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.55);
+  }
+  @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.12); } }
+
+  /* ---------- photo card buttons ---------- */
+  .photochip {
+    position: relative; display: block; width: 100%;
+    height: 120px; border: none; border-radius: 20px;
+    overflow: hidden; cursor: pointer;
+    margin-bottom: 14px; padding: 0;
+    box-shadow: 0 5px 16px rgba(27,58,107,.3);
+    transition: transform .08s ease;
+    color: #fff; font-family: inherit; text-align: left;
+  }
+  .photochip.tall { height: 150px; }
+  .photochip:active { transform: scale(.97); }
+  .photochip:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .photochip .pcimg {
+    position: absolute; inset: 0;
+    background-position: center; background-size: cover;
+    transition: transform .25s ease;
+  }
+  .photochip:active .pcimg { transform: scale(1.05); }
+  .photochip .pcshade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,30,60,.05) 25%, rgba(10,30,60,.68) 100%);
+  }
+  .photochip .pclabel {
+    position: absolute; left: 18px; bottom: 12px; right: 50px;
+    font-size: 26px; text-shadow: 0 2px 8px rgba(0,0,0,.6);
+  }
+  .photochip.tall .pclabel { font-size: 30px; }
+  .photochip .pcicon {
+    position: absolute; left: 18px; top: 12px; font-size: 24px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.5);
+  }
+  .photochip .pcchev {
+    position: absolute; right: 16px; bottom: 12px;
+    font-size: 26px; opacity: .95; text-shadow: 0 2px 6px rgba(0,0,0,.5);
+  }
+
+  /* ---------- color buttons (for option lists without photos) ---------- */
+  .btn {
+    display: flex; align-items: center; gap: 16px;
+    width: 100%;
+    border: none; border-radius: 18px;
+    padding: 19px 22px;
+    margin-bottom: 13px;
+    font-family: inherit;
+    font-size: 23px; color: #fff; text-align: left;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(27,58,107,.28);
+    transition: transform .08s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .btn .icon { font-size: 27px; width: 40px; text-align: center; flex-shrink: 0; }
+  .btn .label { flex: 1; }
+  .btn .chev { font-size: 22px; opacity: .9; }
+  .btn.small { font-size: 18px; padding: 14px 18px; border-radius: 14px; margin-bottom: 10px; }
+
+  .teal   { background: linear-gradient(180deg, #25b9b4, #15938f); }
+  .green  { background: linear-gradient(180deg, #5cba5f, #3e9341); }
+  .orange { background: linear-gradient(180deg, #f8b234, #ec9410); }
+  .blue   { background: linear-gradient(180deg, #2f86c9, #1b62a0); }
+  .purple { background: linear-gradient(180deg, #9a7cd0, #7257ab); }
+  .coral  { background: linear-gradient(180deg, #f4806a, #e35a40); }
+  .navybtn{ background: linear-gradient(180deg, #2a4f8f, #1b3a6b); }
+
+  /* ---------- back row ---------- */
+  .backrow { display: flex; align-items: center; gap: 8px; margin: 2px 0 10px; }
+  .backbtn {
+    border: none; background: rgba(255,255,255,.85);
+    color: var(--navy); font-size: 15px; font-weight: 600;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    padding: 9px 18px; border-radius: 999px; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(27,58,107,.2);
+  }
+  .backbtn:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
+
+  /* ---------- result card with photo header ---------- */
+  .card {
+    background: rgba(255,255,255,.95);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 6px 22px rgba(27,58,107,.22);
+    margin-bottom: 16px;
+  }
+  .cardimg {
+    position: relative; height: 175px; overflow: hidden;
+  }
+  .cardimg .ciimg {
+    position: absolute; inset: 0;
+    background-position: center; background-size: cover;
+    animation: kenburns 18s ease-in-out infinite alternate;
+  }
+  .cardimg .cishade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,30,60,0) 35%, rgba(10,30,60,.7) 100%);
+  }
+  .cardimg h2 {
+    position: absolute; left: 20px; right: 110px; bottom: 12px;
+    color: #fff; font-size: 26px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.6);
+  }
+  .savebtn {
+    position: absolute; right: 14px; top: 12px;
+    border: none; background: rgba(255,255,255,.92);
+    color: var(--navy);
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px; font-weight: 600;
+    border-radius: 999px; padding: 8px 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .savebtn[aria-pressed="true"] { background: #fdeae4; color: #b3402a; }
+  .savebtn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .cardbody { padding: 18px 24px 24px; }
+  .card .meta {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 13px; color: #3a5a86; margin-bottom: 14px;
+  }
+  .card ol {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 17px; line-height: 1.45;
+    padding-left: 24px; margin-bottom: 14px;
+  }
+  .card ol li { margin-bottom: 8px; }
+  .tip, .watch {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 15px; line-height: 1.4;
+    border-radius: 14px; padding: 12px 14px; margin-bottom: 10px;
+  }
+  .tip   { background: #e4f6ec; color: #1d5e3a; }
+  .watch { background: #fdeae4; color: #8a3520; }
+  .tip b, .watch b { display: block; margin-bottom: 2px; }
+  .linkbtn {
+    display: block; text-align: center;
+    background: var(--navy); color: #fff;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 17px; font-weight: 600;
+    text-decoration: none;
+    border-radius: 14px; padding: 15px;
+    margin-top: 6px;
+  }
+  .linkbtn:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; }
+
+  .empty {
+    text-align: center;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 15px; color: #3a5a86;
+    background: rgba(255,255,255,.8);
+    border-radius: 18px; padding: 28px 20px; margin-top: 12px;
+  }
+
+  /* ---------- photo credits screen ---------- */
+  .creditrow {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,.9);
+    border-radius: 16px; padding: 10px;
+    margin-bottom: 10px;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 13px; color: #3a5a86;
+    text-decoration: none;
+  }
+  .creditrow img { width: 84px; height: 56px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+  .creditrow b { color: var(--navy); display: block; font-size: 14px; }
+
+  /* ---------- bottom nav ---------- */
+  nav {
+    flex-shrink: 0;
+    background: rgba(255,255,255,.93);
+    backdrop-filter: blur(8px);
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -4px 18px rgba(27,58,107,.15);
+    display: flex; justify-content: space-around;
+    padding: 10px 8px max(env(safe-area-inset-bottom), 12px);
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+  }
+  nav button {
+    border: none; background: none;
+    font-size: 12px; color: #7a8aa5;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; font-family: inherit;
+    padding: 4px 10px; border-radius: 12px;
+  }
+  nav button .nicon { font-size: 22px; }
+  nav button.active { color: var(--blue); font-weight: 700; }
+  nav button:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  /* ---------- entrance animation: staggered cascade ---------- */
+  .screen > * { animation: fadeup .5s cubic-bezier(.2,.7,.3,1) both; }
+  .screen > *:nth-child(1) { animation-delay: 0s; }
+  .screen > *:nth-child(2) { animation-delay: .05s; }
+  .screen > *:nth-child(3) { animation-delay: .1s; }
+  .screen > *:nth-child(4) { animation-delay: .15s; }
+  .screen > *:nth-child(5) { animation-delay: .2s; }
+  .screen > *:nth-child(6) { animation-delay: .25s; }
+  .screen > *:nth-child(7) { animation-delay: .3s; }
+  .screen > *:nth-child(8) { animation-delay: .35s; }
+  .screen > *:nth-child(n+9) { animation-delay: .4s; }
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .screen > * { animation: none; }
+    .hero .heroimg, .cardimg .ciimg { animation: none; }
+    .btn, .photochip, .photochip .pcimg { transition: none; }
+  }
+
+  /* ---------- kiosk mode ---------- */
+  body.kiosk, body.kiosk * {
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+  }
+  html, body { overscroll-behavior: none; }
+  #resetbtn {
+    display: none;
+    position: absolute; right: 14px; top: max(env(safe-area-inset-top), 14px);
+    border: none; background: rgba(255,255,255,.85);
+    color: var(--navy); font-size: 13px; font-weight: 600;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(27,58,107,.2);
+  }
+  body.kiosk #resetbtn { display: block; }
+  #qrmodal {
+    position: fixed; inset: 0; z-index: 50;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(10,25,50,.55); backdrop-filter: blur(4px);
+    padding: 24px;
+  }
+  #qrmodal.open { display: flex; }
+  .qrbox {
+    background: #fff; border-radius: 24px;
+    padding: 26px 26px 20px; max-width: 380px; width: 100%;
+    text-align: center;
+    box-shadow: 0 16px 50px rgba(0,0,0,.35);
+    animation: qrpop .22s cubic-bezier(.2,.7,.3,1.2);
+  }
+  @keyframes qrpop { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+  .qrbox h3 { font-size: 22px; margin-bottom: 4px; }
+  .qrbox .qrsub {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px; color: #3a5a86; margin-bottom: 14px;
+  }
+  .qrbox .qrsvg { display: flex; justify-content: center; margin-bottom: 8px; }
+  .qrbox .qrsvg svg { width: 230px; height: 230px; }
+  .qrbox .qrdomain {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 13px; color: #7a8aa5; word-break: break-all; margin-bottom: 14px;
+  }
+  .qrbox .qrdone {
+    width: 100%;
+    border: none; background: var(--navy); color: #fff;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 17px; font-weight: 600;
+    border-radius: 14px; padding: 14px; cursor: pointer;
+  }
+  .kcbox {
+    background: linear-gradient(135deg, #1b3a6b, #2a5fa8);
+    color: #fff; border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 10px;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 15px; line-height: 1.4;
+  }
+  .kcbox b { display: block; margin-bottom: 2px; font-size: 16px; }
+  .kcbox .kcbtn {
+    display: block; text-align: center;
+    background: #fff; color: var(--navy);
+    font-weight: 700; font-size: 15px;
+    text-decoration: none;
+    border-radius: 10px; padding: 11px;
+    margin-top: 10px;
+  }
+  #toast {
+    position: fixed; left: 50%; bottom: 110px; z-index: 60;
+    transform: translateX(-50%);
+    background: rgba(20,40,70,.92); color: #fff;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px; font-weight: 600;
+    padding: 12px 20px; border-radius: 999px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease;
+    max-width: 86vw; text-align: center;
+  }
+  #toast.show { opacity: 1; }
+
+  footer.credit {
+    text-align: center;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 12px; color: #44608c;
+    background: rgba(255,255,255,.75);
+    border-radius: 14px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+  }
+  footer.credit b { color: var(--navy); }
+  footer.credit a, footer.credit .linklike {
+    color: var(--navy); font-weight: 600;
+    border: none; background: none; cursor: pointer;
+    font-family: inherit; font-size: inherit;
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<div id="backdrop" aria-hidden="true"></div>
+
+<header>
+  <button id="resetbtn" aria-label="Start a fresh session">🔄 Start over</button>
+  <svg class="logo" id="logotap" viewBox="0 0 100 100" role="img" aria-label="Oʻahu Pathfinder logo">
+    <circle cx="50" cy="50" r="46" fill="#dff3f7"/>
+    <circle cx="68" cy="30" r="12" fill="#f5c542"/>
+    <path d="M14 62 Q35 30 56 56 Q70 42 88 60 L88 70 Q50 58 14 72 Z" fill="#4e9e4e"/>
+    <path d="M10 72 Q30 64 50 70 Q72 64 92 72 Q72 84 50 78 Q28 86 10 72 Z" fill="#2196b8"/>
+    <path d="M30 48 Q28 30 18 24 M30 48 Q34 30 44 26 M30 48 Q22 36 12 36" stroke="#2e7d32" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <rect x="28" y="44" width="4" height="14" rx="2" fill="#6d4c2f"/>
+  </svg>
+  <h1>Marina Hawaii Vacations</h1>
+  <div class="tagline">Your Waikīkī stay guide</div>
+  <div class="divider" aria-hidden="true">🌺</div>
+</header>
+
+<main id="main" aria-live="polite"></main>
+
+<nav aria-label="Main navigation">
+  <button id="nav-home"    data-go="t/home"><span class="nicon" aria-hidden="true">🏠</span>Home</button>
+  <button id="nav-explore" data-go="t/explore"><span class="nicon" aria-hidden="true">🧭</span>Explore</button>
+  <button id="nav-alerts"  data-go="t/alerts"><span class="nicon" aria-hidden="true">⚠️</span>Alerts</button>
+  <button id="nav-saved"   data-go="t/saved"><span class="nicon" aria-hidden="true">🤍</span>Saved</button>
+</nav>
+
+<noscript>
+  <div style="text-align:center;padding:20px;font-family:sans-serif;">
+    Oʻahu Pathfinder needs JavaScript enabled to run.
+  </div>
+</noscript>
+
+<div id="qrmodal" role="dialog" aria-modal="true" aria-label="Scan this code with your phone">
+  <div class="qrbox">
+    <h3 id="qrtitle">Open on your phone</h3>
+    <div class="qrsub">Point your phone's camera at this code</div>
+    <div class="qrsvg" id="qrsvg"></div>
+    <div class="qrdomain" id="qrdomain"></div>
+    <button class="qrdone" data-qrdone>Done</button>
+  </div>
+</div>
+<div id="toast" role="status"></div>
+
+<script src="../qrcode.js"></script>
+<script>
+/* =========================================================
+   CONFIG — shown in the footer of every screen.
+   ========================================================= */
+const CONFIG = {
+  ownerName: "Kind Codex",
+  ownerContact: "August@kindcodex.com",
+  ownerPitch: "Want a concierge app for your property?",
+  version: "1.4.0",
+};
+
+/* =========================================================
+   DECISION TREE — edit this data, the app rebuilds itself.
+   nodes:   question screens. hero: banner photo.
+            option.go: "n/<node>" goes deeper, "r/<result>" shows an answer.
+            option.img: photo card instead of a color button.
+   results: answer cards. img: photo header.
+   All external links verified live as of June 2026.
+   ========================================================= */
+
+const nodes = {
+  root: {
+    q: "Welcome home! What do you need?",
+    sub: "On-site team since 1965: (808) 946-0716.",
+    options: [
+      { label: "Check-In & Unit Help",     icon: "🔑", img: "../images/sunset.jpg",      go: "n/mh_unit"    },
+      { label: "Parking",                  icon: "🚗", img: "../images/thebus.jpg",      go: "r/mh_parking" },
+      { label: "Laundry & Trash",          icon: "🧺", img: "../images/kailua.jpg",      go: "r/mh_laundry" },
+      { label: "Food & Shopping Nearby",   icon: "🛍️", img: "../images/food.jpg",        go: "r/mh_food"    },
+      { label: "Beach & Lagoon",           icon: "🏖️", img: "../images/lanikai.jpg",     go: "r/mh_beach"   },
+      { label: "Property Support",         icon: "☎️", img: "../images/skyline.jpg",     go: "r/mh_support" },
+      { label: "Explore Oʻahu",            icon: "🧭", img: "../images/diamondhead.jpg", go: "n/tourist"    },
+    ]
+  },
+
+  /* ---------------- MARINA HAWAII LAYER ---------------- */
+  mh_unit: {
+    q: "Check-in & your unit",
+    hero: "../images/sunset.jpg",
+    options: [
+      { label: "Check-In & Keys",  icon: "🔑", color: "teal",   go: "r/mh_checkin"  },
+      { label: "What's Included",  icon: "🧰", color: "green",  go: "r/mh_supplies" },
+      { label: "House Rules",      icon: "📋", color: "purple", go: "r/mh_rules"    },
+    ]
+  },
+
+  /* ---------------- HOTEL LAYER (customize per property) ---------------- */
+  h_hotel: {
+    q: "Hotel essentials",
+    hero: "../images/sunset.jpg",
+    options: [
+      { label: "WiFi & Connectivity",      icon: "📶", color: "blue",   go: "r/h_wifi"     },
+      { label: "Breakfast & Dining",       icon: "🥞", color: "coral",  go: "r/h_breakfast"},
+      { label: "Pool, Towels & Beach Gear",icon: "🏖️", color: "teal",   go: "r/h_pool"     },
+      { label: "Checkout & Luggage",       icon: "🧳", color: "purple", go: "r/h_checkout" },
+      { label: "Parking & Shuttles",       icon: "🚗", color: "green",  go: "r/h_parking"  },
+    ]
+  },
+  h_favorites: {
+    q: "Our favorite spots",
+    sub: "Hand-picked by our team — guest perks included.",
+    hero: "../images/food.jpg",
+    options: [
+      { label: "Dinner Tonight",   icon: "🍽️", img: "../images/food.jpg",     go: "r/h_dinner"    },
+      { label: "The Best Lūʻau",   icon: "🌺", img: "../images/sunset.jpg",   go: "r/h_luau"      },
+      { label: "Snorkel & Surf",   icon: "🤿", img: "../images/hanauma.jpg",  go: "r/h_snorkel"   },
+      { label: "Sunset Cocktails", icon: "🍹", img: "../images/skyline.jpg",  go: "r/h_cocktails" },
+    ]
+  },
+  h_safe: {
+    q: "Stay safe, travel with aloha",
+    hero: "../images/northshore.jpg",
+    options: [
+      { label: "Beach & Surf Conditions", icon: "🌊", color: "teal",   go: "r/surfsafety" },
+      { label: "Emergency Info",          icon: "🚨", color: "coral",  go: "r/emergency"  },
+      { label: "Local Etiquette 101",     icon: "🤙", color: "purple", go: "r/etiquette"  },
+      { label: "Volunteer / Give Back",   icon: "🌱", color: "green",  go: "r/malama"     },
+    ]
+  },
+
+  /* ---------------- TOURIST ---------------- */
+  tourist: {
+    q: "What do you need help with?",
+    hero: "../images/diamondhead.jpg",
+    options: [
+      { label: "Plan My Trip",       icon: "🧳", img: "../images/hanauma.jpg",    go: "n/t_plan"   },
+      { label: "Things To Do Today", icon: "🏝️", img: "../images/lanikai.jpg",    go: "n/t_today"  },
+      { label: "Get Around",         icon: "🚌", img: "../images/thebus.jpg",     go: "n/t_around" },
+      { label: "Stay Safe",          icon: "🛟", img: "../images/northshore.jpg", go: "n/t_safe"   },
+      { label: "Respect the Island", icon: "🌺", img: "../images/hibiscus.jpg",   go: "n/t_respect"},
+    ]
+  },
+  t_plan: {
+    q: "How long are you here?",
+    hero: "../images/hanauma.jpg",
+    options: [
+      { label: "First Time, 1 Day",    icon: "☀️", img: "../images/diamondhead.jpg", go: "r/oneday"   },
+      { label: "3 Days",               icon: "🗓️", img: "../images/northshore.jpg",  go: "r/threeday" },
+      { label: "A Week or More",       icon: "🏖️", img: "../images/pearlharbor.jpg", go: "r/week"     },
+      { label: "Where Should I Stay?", icon: "🏨", img: "../images/sunset.jpg",      go: "r/stay"     },
+    ]
+  },
+  t_today: {
+    q: "What sounds good today?",
+    hero: "../images/lanikai.jpg",
+    options: [
+      { label: "Beach Day",      icon: "🏄", img: "../images/kailua.jpg",   go: "r/beach" },
+      { label: "Local Food",     icon: "🍽️", img: "../images/food.jpg",     go: "r/food"  },
+      { label: "Go for a Hike",  icon: "⛰️", img: "../images/hike.jpg",     go: "r/hike"  },
+      { label: "Rainy Day Plan", icon: "🌧️", img: "../images/hibiscus.jpg", go: "r/rainy" },
+    ]
+  },
+  t_around: {
+    q: "How are you getting around?",
+    hero: "../images/thebus.jpg",
+    options: [
+      { label: "No Car — Help!",     icon: "🚶", color: "teal",  go: "r/nocar"   },
+      { label: "Airport to Waikīkī", icon: "✈️", color: "blue",  go: "r/airport" },
+      { label: "TheBus & Skyline",   icon: "🚌", color: "green", go: "r/thebus"  },
+    ]
+  },
+  t_safe: {
+    q: "Stay safe out there",
+    hero: "../images/northshore.jpg",
+    options: [
+      { label: "Beach & Surf Conditions", icon: "🌊", color: "teal",  go: "r/surfsafety" },
+      { label: "Emergency Info",          icon: "🚨", color: "coral", go: "r/emergency"  },
+    ]
+  },
+  t_respect: {
+    q: "Travel with aloha",
+    hero: "../images/hibiscus.jpg",
+    options: [
+      { label: "Local Etiquette 101",   icon: "🤙", color: "purple", go: "r/etiquette" },
+      { label: "Volunteer / Give Back", icon: "🌱", img: "../images/kailua.jpg", go: "r/malama" },
+    ]
+  },
+
+  /* ---------------- BUSINESS OWNER ---------------- */
+  business: {
+    q: "What do you need help with?",
+    hero: "../images/skyline.jpg",
+    options: [
+      { label: "Start a Business",    icon: "🏪", color: "teal",   go: "n/b_start"  },
+      { label: "Get More Customers",  icon: "📣", color: "green",  go: "n/b_grow"   },
+      { label: "Fix Operations",      icon: "⚙️", color: "orange", go: "r/ops"      },
+      { label: "Business Compliance", icon: "🛡️", color: "purple", go: "n/b_comply" },
+      { label: "Find Help",           icon: "🤝", color: "coral",  go: "r/bizhelp"  },
+    ]
+  },
+  b_start: {
+    q: "Start a business",
+    sub: "In the right order — takes about a week total.",
+    hero: "../images/skyline.jpg",
+    options: [
+      { label: "Register the Business", icon: "📝", color: "teal",  go: "r/register"   },
+      { label: "Get Your GET License",  icon: "🧾", color: "green", go: "r/getlicense" },
+      { label: "Get an EIN (Free)",     icon: "🔢", color: "blue",  go: "r/ein"        },
+    ]
+  },
+  b_grow: {
+    q: "How do you want to grow?",
+    sub: "Get more customers.",
+    hero: "../images/shaveice.jpg",
+    options: [
+      { label: "Google Business Profile", icon: "🔍", color: "blue",   go: "n/biztype"  },
+      { label: "Website Audit",           icon: "🖥️", color: "teal",   go: "r/website"  },
+      { label: "Reviews & Photos",        icon: "⭐", color: "green",  go: "r/reviews"  },
+      { label: "Lead Capture",            icon: "🧲", color: "purple", go: "r/leads"    },
+      { label: "Follow-Up System",        icon: "📨", color: "orange", go: "r/followup" },
+    ]
+  },
+  biztype: {
+    q: "What kind of business are you?",
+    sub: "Customize your next steps.",
+    hero: "../images/food.jpg",
+    options: [
+      { label: "Dentist",     icon: "🦷", color: "teal",   go: "r/gbp_dentist"    },
+      { label: "Contractor",  icon: "🔨", color: "green",  go: "r/gbp_contractor" },
+      { label: "Restaurant",  icon: "🍴", color: "coral",  go: "r/gbp_restaurant" },
+      { label: "Salon",       icon: "✂️", color: "purple", go: "r/gbp_salon"      },
+      { label: "Retail Shop", icon: "🛍️", color: "blue",   go: "r/gbp_retail"     },
+    ]
+  },
+  b_comply: {
+    q: "Stay compliant",
+    hero: "../images/skyline.jpg",
+    options: [
+      { label: "Annual Report Filing", icon: "📅", color: "purple", go: "r/annualreport" },
+      { label: "GET Tax Filing",       icon: "🧾", color: "teal",   go: "r/getfiling"    },
+    ]
+  },
+
+  /* ---------------- LOCAL ---------------- */
+  local: {
+    q: "What do you need help with?",
+    hero: "../images/kailua.jpg",
+    options: [
+      { label: "City Stuff (DMV, ID)", icon: "🪪", color: "teal",   go: "n/l_city"    },
+      { label: "Trash & Bulky Items",  icon: "🗑️", color: "green",  go: "n/l_trash"   },
+      { label: "Report a Problem",     icon: "📢", color: "orange", go: "r/report"    },
+      { label: "Emergency Alerts",     icon: "🚨", color: "coral",  go: "r/hnlalert"  },
+      { label: "Find Help (211)",      icon: "🤝", color: "purple", go: "r/help211"   },
+    ]
+  },
+  l_city: {
+    q: "City services",
+    hero: "../images/thebus.jpg",
+    options: [
+      { label: "Driver's License / State ID", icon: "🪪", color: "teal", go: "r/license" },
+      { label: "Vehicle Registration",        icon: "🚗", color: "blue", go: "r/vehicle" },
+    ]
+  },
+  l_trash: {
+    q: "Trash & recycling",
+    hero: "../images/kailua.jpg",
+    options: [
+      { label: "Bulky Item Pickup",   icon: "🛋️", color: "green", go: "r/bulky"    },
+      { label: "Collection Schedule", icon: "📅", color: "teal",  go: "r/trashday" },
+    ]
+  },
+};
+
+const results = {
+  /* ---- Marina Hawaii layer ---- */
+  mh_checkin: {
+    title: "Check-In & Keys", img: "../images/sunset.jpg", meta: "🔑 Office: 1777 Ala Moana Blvd #112",
+    steps: [
+      "The office is on the ground floor of the Ilikai Marina building, suite 112.",
+      "Your check-in instructions and codes are in your booking confirmation email.",
+      "Arriving after hours? Call ahead — after-hours arrangements are made in advance.",
+      "Keep door and lockbox codes saved on your phone, not just in email.",
+    ],
+    tip: "Screenshot your codes before you fly — airport WiFi is a gamble you don't need.",
+    watch: "Check-in times and procedures vary by unit — confirm yours in the booking confirmation.",
+    link: { label: "Call the office →", url: "tel:+18089460716" }
+  },
+  mh_supplies: {
+    title: "What's Included", img: "../images/kailua.jpg", meta: "🧰 Full kitchen · starter supplies",
+    steps: [
+      "Units have full kitchens with cooking and dining utensils.",
+      "A starter kit of basics (paper goods, soaps) gets you going — restock yourself after that.",
+      "Unit linens and towels stay with the unit — return any borrowed beach gear per your unit's instructions.",
+      "ABC Stores are everywhere for small restocks.",
+    ],
+    tip: "Target and Foodland at Ala Moana Center are the cheap big-restock run, 15 minutes on foot.",
+    watch: "Included supplies vary by unit — confirm your unit's list with the office.",
+    link: { label: "Call the office →", url: "tel:+18089460716" }
+  },
+  mh_rules: {
+    title: "House Rules", img: "../images/skyline.jpg", meta: "📋 Condo living — your neighbors live here",
+    steps: [
+      "These are residential buildings — quiet hours matter, especially on lanais.",
+      "Building amenities (pool, BBQ) vary by building and have their own rules.",
+      "No smoking in units or on lanais.",
+      "Checkout: dishes done, trash out, keys returned per your instructions.",
+    ],
+    tip: "Treat the lanai like a library after 9pm and the whole building loves you.",
+    watch: "Ilikai Tower, Ilikai Marina, Discovery Bay, and Canterbury Place each have their own building rules — confirm yours.",
+    link: { label: "Call the office →", url: "tel:+18089460716" }
+  },
+  mh_parking: {
+    title: "Parking", img: "../images/thebus.jpg", meta: "🚗 Varies by building — ask first",
+    steps: [
+      "Parking arrangements differ by building and unit — some need a pass from the office.",
+      "Sort parking out at check-in, before you need it.",
+      "Backup: paid garages around the Ilikai / Ala Moana area.",
+      "Street parking is metered and enforced — don't risk the tow.",
+    ],
+    tip: "Confirm parking BEFORE booking the rental car — it may change your math entirely.",
+    watch: "Rates and availability vary by building — confirm with the office.",
+    link: { label: "Call the office →", url: "tel:+18089460716" }
+  },
+  mh_laundry: {
+    title: "Laundry & Trash", img: "../images/kailua.jpg", meta: "🧺 In-building facilities",
+    steps: [
+      "Most buildings have shared laundry — the floor and payment setup vary by building.",
+      "Trash goes down the chute or to the room per your building's instructions.",
+      "Follow the building's recycling setup where available.",
+    ],
+    tip: "Early-morning laundry runs mean no waiting for machines.",
+    watch: "Confirm your building's laundry location and trash setup at check-in — it varies.",
+    link: { label: "Call the office →", url: "tel:+18089460716" }
+  },
+  mh_food: {
+    title: "Food & Shopping Nearby", img: "../images/food.jpg", meta: "🛍️ Ala Moana Center ~15 min walk",
+    steps: [
+      "Ala Moana Center: Hawaiʻi's biggest shopping center with massive food halls — about 15 minutes on foot.",
+      "Foodland Farms grocery is inside Ala Moana Center — full kitchen, full fridge.",
+      "Breakfast and casual spots line Ala Moana Blvd between you and Waikīkī.",
+      "Waikīkī's restaurant row is roughly 10–15 minutes the other direction.",
+    ],
+    tip: "Cooking even half your meals in that full kitchen pays for a lūʻau by week's end.",
+    watch: "Store and restaurant hours vary — check before walking over.",
+    link: { label: "Map: Ala Moana Center →", url: "https://www.google.com/maps?q=Ala+Moana+Center" }
+  },
+  mh_beach: {
+    title: "Beach & Lagoon", img: "../images/lanikai.jpg", meta: "🏖️ Lagoon + two beaches, all walkable",
+    steps: [
+      "Duke Kahanamoku Lagoon: calm, shallow, kid-friendly — minutes from the Ilikai area.",
+      "Duke Kahanamoku Beach sits right beside it.",
+      "Ala Moana Beach Park: the locals' beach — long, calm, protected swimming.",
+      "Sunset from Magic Island (Ala Moana's point) is the free showstopper.",
+    ],
+    tip: "Lagoon mornings with kids, Magic Island for sunset picnics. That's the rhythm.",
+    watch: "No lifeguard at the lagoon — keep eyes on your crew. Return borrowed beach gear per your unit's instructions.",
+    link: { label: "Map: lagoon & beaches →", url: "https://www.google.com/maps?q=Duke+Kahanamoku+Lagoon" }
+  },
+  mh_support: {
+    title: "Property Support", img: "../images/skyline.jpg", meta: "☎️ On-site team since 1965",
+    steps: [
+      "Office: 1777 Ala Moana Blvd #112, ground floor of Ilikai Marina.",
+      "Call (808) 946-0716, or toll-free (866) 976-6518.",
+      "Housekeeping is available for an additional fee — schedule through the office.",
+      "Urgent building issues: contact your building's security or front desk first, then the office.",
+    ],
+    tip: "Save the office number in your phone right now — future you says mahalo.",
+    watch: "Office hours and after-hours procedures vary — confirm at check-in.",
+    link: { label: "Call the office →", url: "tel:+18089460716" }
+  },
+
+  /* ---- hotel layer (customize per property) ---- */
+  h_wifi: {
+    title: "WiFi & Connectivity", img: "../images/sunset.jpg", meta: "📶 Free everywhere on property",
+    steps: [
+      "Network: MaukaLani-Guest — the password is on your key card sleeve.",
+      "Trouble connecting? Dial 0 and we'll sort it in minutes.",
+      "The lobby lounge has a work corner with printing — ask any team member.",
+      "Cast to your room TV: join the same network and use AirPlay / Chromecast.",
+    ],
+    tip: "Ocean-side lanai rooms get the strongest signal for video calls.",
+    watch: "Only join MaukaLani-Guest — skip lookalike networks without the hotel name.",
+    link: { label: "Call the front desk →", url: "tel:+18085550100" }
+  },
+  h_breakfast: {
+    title: "Breakfast & Dining", img: "../images/food.jpg", meta: "🥞 Lanai Restaurant · 7:00–10:30 daily",
+    steps: [
+      "Breakfast at the Lanai Restaurant, 7:00–10:30am — included for club-floor guests.",
+      "Early flight? The coffee bar opens at 6am with grab-and-go.",
+      "Poolside grill serves lunch 11–6. Room service until 9pm (dial 3).",
+      "Friday night is lūʻau night on the great lawn — reserve by Thursday.",
+    ],
+    tip: "Beat the 8:30 rush — come before 8 and get a lanai-edge table.",
+    watch: "Kitchen closes promptly at 10:30 for breakfast. Don't be the 10:29 pancake order.",
+    link: { label: "Call the front desk →", url: "tel:+18085550100" }
+  },
+  h_pool: {
+    title: "Pool, Towels & Beach Gear", img: "../images/lanikai.jpg", meta: "🏖️ Pool 7am–10pm · gear is free",
+    steps: [
+      "Towels at the pool hut — just show your key card.",
+      "Free for guests at the beach desk: chairs, umbrellas, boogie boards.",
+      "Snorkel sets are discounted for guests — overnight rental OK.",
+      "The beach in front of the hotel is lifeguarded 9–5.",
+    ],
+    tip: "Reef-safe sunscreen is at the gift shop — Hawaiʻi law bans the other kind.",
+    watch: "No glass anywhere near the pool deck. Cabana cups are available at the bar.",
+    link: { label: "Call the front desk →", url: "tel:+18085550100" }
+  },
+  h_checkout: {
+    title: "Checkout & Luggage", img: "../images/skyline.jpg", meta: "🧳 Checkout 11am · luggage storage free",
+    steps: [
+      "Checkout is 11am — express checkout via your room TV, or drop the key at the desk.",
+      "Late checkout to 1pm when available — dial 0 the night before.",
+      "We store luggage free on your departure day — enjoy one last beach run.",
+      "Airport shuttle leaves hourly — book at least 24 hours ahead.",
+    ],
+    tip: "Late flight? Ask about shower access after a final beach afternoon.",
+    watch: "Minibar and incidentals post after checkout — check your emailed folio.",
+    link: { label: "Call the front desk →", url: "tel:+18085550100" }
+  },
+  h_parking: {
+    title: "Parking & Shuttles", img: "../images/thebus.jpg", meta: "🚗 Valet $35 · self $25 overnight",
+    steps: [
+      "Valet at the porte-cochère, self-parking on P1–P2.",
+      "EV chargers on P1 — first-come, ask the valet to plug in.",
+      "Free guest bikes (2 hours) at the beach desk.",
+      "The Waikīkī trolley stops right out front; TheBus stop is half a block mauka.",
+    ],
+    tip: "Staying in Waikīkī the whole time? Skip the rental car and save the parking fee.",
+    watch: "Street parking nearby is tow-away during rush hours. Use the garage.",
+    link: { label: "Call the front desk →", url: "tel:+18085550100" }
+  },
+  h_dinner: {
+    title: "Dinner Tonight", img: "../images/food.jpg", meta: "🍽️ Our partners — mention Mauka Lani",
+    steps: [
+      "Kaimana Fish House (3 min walk) — guests get 10% off, fresh catch daily.",
+      "Uncle K's BBQ (5 min) — family plates, kids eat free Sundays.",
+      "Moana Noodle Bar (7 min) — late kitchen, great after a show.",
+      "We book for you — dial 0 or stop by the desk.",
+    ],
+    tip: "Sunset-view tables go fast — have us book before 4pm.",
+    watch: "Most island kitchens close by 9pm. Plan dinner earlier than back home.",
+    link: { label: "Book through the front desk →", url: "tel:+18085550100" }
+  },
+  h_luau: {
+    title: "The Best Lūʻau", img: "../images/sunset.jpg", meta: "🌺 Guest rate $129 (regular $159)",
+    steps: [
+      "Our partner lūʻau runs Tuesday, Thursday, and Saturday evenings.",
+      "Guest rate includes the shuttle, dinner, and open seating.",
+      "Book at the front desk — we hold a guest allotment until noon same-day.",
+      "On-property lūʻau night is Friday on the great lawn.",
+    ],
+    tip: "Book two or more days out for the best table tier at no extra cost.",
+    watch: "It's outdoors and breezy after sunset — bring a light layer.",
+    link: { label: "Book through the front desk →", url: "tel:+18085550100" }
+  },
+  h_snorkel: {
+    title: "Snorkel & Surf", img: "../images/hanauma.jpg", meta: "🤿 Guest discounts at the beach desk",
+    steps: [
+      "Hanauma Bay: reserve online in advance (closed Mon/Tue) — we can help you book.",
+      "Our partner surf school does morning lessons right out front — guest discount.",
+      "Snorkel gear at the beach desk; overnight rental OK.",
+      "Winter swells: north shore is for watching, not swimming. Ask us where it's calm.",
+    ],
+    tip: "First time? Book the lagoon lesson — warm, calm, and you'll stand up day one.",
+    watch: "Check today's ocean conditions (Alerts tab) before any water plans.",
+    link: { label: "Book through the front desk →", url: "tel:+18085550100" }
+  },
+  h_cocktails: {
+    title: "Sunset Cocktails", img: "../images/skyline.jpg", meta: "🍹 Rooftop bar 4–11pm · guests get priority",
+    steps: [
+      "Rooftop Lounge: 4–11pm, hotel guests skip the line — show your key card.",
+      "Happy hour 4–6pm: half-off mai tais and pūpū.",
+      "Beach bar pours until sunset — toes-in-sand seating.",
+      "Live slack-key guitar Fridays on the rooftop.",
+    ],
+    tip: "Arrive 30 minutes before sunset for the golden-hour rail seats.",
+    watch: "Rooftop is 21+ after 8pm. Families: the beach bar stays all-ages.",
+    link: { label: "Call the front desk →", url: "tel:+18085550100" }
+  },
+
+  /* ---- tourist ---- */
+  oneday: {
+    title: "Your Perfect First Day", img: "../images/diamondhead.jpg", meta: "⏱ Full day · 💵 ~$30–60 pp + food",
+    steps: [
+      "Sunrise or early morning: Diamond Head hike — reserve online first, out-of-state visitors need a reservation.",
+      "Late morning: Waikīkī Beach swim + plate lunch nearby.",
+      "Afternoon: Honolulu Zoo side or drive to Hanauma Bay lookout.",
+      "Sunset: Catch it from Waikīkī Wall or Magic Island — free and unbeatable.",
+    ],
+    tip: "Locals eat lunch at 11am to beat lines. Do the same.",
+    watch: "Diamond Head requires advance reservations for non-residents — don't just show up.",
+    link: { label: "Reserve Diamond Head →", url: "https://gostateparks.hawaii.gov/diamondhead" }
+  },
+  threeday: {
+    title: "3-Day Game Plan", img: "../images/northshore.jpg", meta: "⏱ 3 days · best mix of town + country",
+    steps: [
+      "Day 1: Waikīkī + Diamond Head + sunset on the beach.",
+      "Day 2: North Shore loop — Haleʻiwa town, garlic shrimp trucks, Waimea Bay (summer swim, winter watch the big waves).",
+      "Day 3: East side — Kailua/Lanikai beach morning, Pali Lookout on the drive back.",
+    ],
+    tip: "Drive the North Shore loop clockwise to keep the ocean on your right for views and easy pull-offs.",
+    watch: "Winter surf on North Shore can be deadly. Swim only at lifeguarded beaches.",
+    link: { label: "Oʻahu travel guide →", url: "https://www.gohawaii.com/islands/oahu" }
+  },
+  week: {
+    title: "A Week of Aloha", img: "../images/pearlharbor.jpg", meta: "⏱ 7 days · you can slow down",
+    steps: [
+      "Split your stay: 4 nights Waikīkī, 3 nights North Shore or Koʻolina.",
+      "Add: Pearl Harbor — tickets release 8 weeks ahead at 3pm HST on a rolling window ($1 fee, all ages need reservations).",
+      "Add: a luau night, snorkeling at Hanauma Bay (reserve!), and a no-plans beach day.",
+      "Leave one day totally empty. The best Oʻahu days are unplanned.",
+    ],
+    tip: "Pearl Harbor parking is $7/day and bags aren't allowed inside — arrive an hour early, travel light.",
+    watch: "Don't pack two 'big' activities in one day — island traffic will eat the gap.",
+    link: { label: "Pearl Harbor tickets →", url: "https://www.recreation.gov/ticket/facility/233338" }
+  },
+  stay: {
+    title: "Where Should I Stay?", img: "../images/sunset.jpg", meta: "🏨 Pick by vibe, not by deal",
+    steps: [
+      "Waikīkī — first-timers. Walk everywhere, no car needed.",
+      "Koʻolina — resort-quiet, families, west side sunsets.",
+      "North Shore — surf-town vibe, need a car, winter waves.",
+      "Kailua — beach-town local feel, vacation rentals, need a car.",
+    ],
+    tip: "If it's your first trip: Waikīkī. You'll save the rental car money entirely.",
+    watch: "Verify any vacation rental is legally permitted — Honolulu fines illegal rentals heavily.",
+    link: { label: "Browse Oʻahu regions →", url: "https://www.gohawaii.com/islands/oahu" }
+  },
+  beach: {
+    title: "Best Beach Today", img: "../images/lanikai.jpg", meta: "🏖️ Check conditions FIRST, then pick",
+    steps: [
+      "Open Safe Beach Day (link below) and check today's hazard ratings for Oʻahu beaches.",
+      "Calm + family: Ko Olina lagoons or Waikīkī.",
+      "Snorkel: Hanauma Bay (closed Mon/Tue, reserve online).",
+      "Big waves to watch (not swim): Waimea Bay or Pipeline in winter.",
+    ],
+    tip: "Lifeguards rotate signs daily — if the sign says high surf, believe it even if it looks calm.",
+    watch: "Never turn your back on the ocean. Rogue waves are Hawaiʻi's #1 visitor injury cause.",
+    link: { label: "Live beach conditions →", url: "https://safebeachday.com" }
+  },
+  food: {
+    title: "Eat Like a Local", img: "../images/food.jpg", meta: "🍽️ $ to $$ — skip the resort restaurants",
+    steps: [
+      "Plate lunch: any 'mixed plate' spot — two scoops rice, mac salad.",
+      "Poke: buy it from a grocery store seafood counter (yes, really — locals do).",
+      "Garlic shrimp: food trucks in Kahuku on the North Shore loop.",
+      "Shave ice: Matsumoto's in Haleʻiwa or Waiola in town. Get it with ice cream on the bottom.",
+    ],
+    tip: "If the line is full of locals in slippers, the food is good.",
+    watch: "Popular spots sell out by early afternoon. Eat early.",
+    link: { label: "Oʻahu dining guide →", url: "https://www.gohawaii.com/islands/oahu" }
+  },
+  hike: {
+    title: "Pick Your Hike", img: "../images/hike.jpg", meta: "⛰️ Sorted by effort",
+    steps: [
+      "Easy + iconic: Diamond Head (reserve first) or Makapuʻu Lighthouse (paved, whales in winter).",
+      "Moderate: Kuliʻouʻou Ridge — forest then a knockout summit view.",
+      "Waterfall: Mānoa Falls — muddy, bring shoes you don't love.",
+      "Start before 8am. Heat + crowds both spike after that.",
+    ],
+    tip: "There's no shame in the 'easy' hike — Makapuʻu views beat hikes triple its effort.",
+    watch: "Closed trails are closed for real reasons (landslides, rescues). Don't hop fences for a photo.",
+    link: { label: "Official trail info →", url: "https://hawaiitrails.ehawaii.gov" }
+  },
+  rainy: {
+    title: "Rainy Day Plan", img: "../images/hibiscus.jpg", meta: "🌧️ Rain on one side ≠ rain everywhere",
+    steps: [
+      "First: check the radar — Oʻahu rain is usually one side of the island. Drive 20 min and it's sunny.",
+      "Bishop Museum — world-class Hawaiian history and culture.",
+      "Pearl Harbor exhibits are mostly covered.",
+      "Ala Moana Center if you must mall. Largest open-air mall in the world (covered walkways).",
+    ],
+    tip: "Windward (Kailua) side rains most. Leeward (Koʻolina) side is driest. Chase the sun west.",
+    watch: "Waterfalls and streams flash-flood fast. Skip stream hikes on rainy days entirely.",
+    link: { label: "Honolulu forecast & radar →", url: "https://www.weather.gov/hfo/" }
+  },
+  nocar: {
+    title: "No Car? No Problem", img: "../images/thebus.jpg", meta: "🚶 Waikīkī is built for this",
+    steps: [
+      "Stay in Waikīkī — beach, food, and nightlife all walkable.",
+      "TheBus goes everywhere for $3 (HOLO card). Route 8 = Ala Moana, Route 23 = Sea Life Park coast.",
+      "Biki bikeshare for short hops around town.",
+      "For North Shore: one-day rental or a tour beats wrestling the bus timetable.",
+    ],
+    tip: "Get a HOLO card at any ABC Store — daily fares cap automatically.",
+    watch: "Rideshare to the North Shore runs $80+ each way. Don't get stranded out there.",
+    link: { label: "TheBus routes & fares →", url: "https://www.thebus.org" }
+  },
+  airport: {
+    title: "Airport → Waikīkī", img: "../images/skyline.jpg", meta: "✈️ 3 ways, by budget",
+    steps: [
+      "Cheapest: TheBus Route 20/23 — $3, but one bag rule (must fit on your lap).",
+      "Easy: Rideshare/taxi — $35–50, 25–40 min depending on traffic.",
+      "Shuttle: shared airport shuttles run ~$25 pp, good for solo travelers with luggage.",
+    ],
+    tip: "Land after 3pm? Traffic doubles the drive. Grab food at the airport and let rush hour pass.",
+    watch: "The Skyline rail doesn't reach Waikīkī yet — don't plan around it.",
+    link: { label: "HNL airport transport →", url: "https://airports.hawaii.gov/hnl/getting-to-from/" }
+  },
+  thebus: {
+    title: "TheBus & Skyline Basics", img: "../images/thebus.jpg", meta: "🚌 $3 flat · HOLO card",
+    steps: [
+      "Buy a HOLO card ($2) at ABC Stores, 7-Eleven, or satellite city halls.",
+      "Tap on every boarding — fares auto-cap daily.",
+      "Google Maps transit directions work great for TheBus.",
+      "Skyline rail runs west side (Kapolei ↔ airport area) — same HOLO card.",
+    ],
+    tip: "Route 'C' CountryExpress is the fastest bus to the North Shore from town.",
+    watch: "Buses stop running earlier than you think — check your last return time before heading out.",
+    link: { label: "Plan a route →", url: "https://www.thebus.org" }
+  },
+  surfsafety: {
+    title: "Ocean Safety Check", img: "../images/northshore.jpg", meta: "🌊 60 seconds, every time",
+    steps: [
+      "Check Safe Beach Day for today's ratings on your beach.",
+      "Swim at lifeguarded beaches. Ask the lifeguard — they love being asked.",
+      "High surf advisory = watch from the sand. Period.",
+      "If caught in a current: don't fight it. Float, wave for help, swim sideways out of it.",
+    ],
+    tip: "Winter = North Shore dangerous, south calm. Summer = the reverse. The island flips.",
+    watch: "More visitors drown snorkeling in calm water than in big surf — fatigue sneaks up. Take breaks.",
+    link: { label: "Live conditions →", url: "https://safebeachday.com" }
+  },
+  emergency: {
+    title: "Emergency Info", img: "../images/hanauma.jpg", meta: "🚨 Save this screen",
+    steps: [
+      "Emergency: 911 (works everywhere, including beaches and trails).",
+      "Ocean rescue: tell 911 'ocean emergency' + nearest beach name.",
+      "Sign up at hnlalert.gov for tsunami/hurricane/flood warning texts.",
+      "Tsunami sirens test 1st business day of each month, 11:45am — don't panic then.",
+    ],
+    tip: "Screenshot your hotel address now. Stress erases memory.",
+    watch: "Hiking rescues are common and embarrassing, not shameful — call early, before dark, not after.",
+    link: { label: "Sign up: HNL Alert →", url: "https://hnlalert.gov" }
+  },
+  etiquette: {
+    title: "Don't Be That Tourist", img: "../images/hibiscus.jpg", meta: "🤙 The unwritten rules",
+    steps: [
+      "Take your shoes off at the door. Always. No exceptions.",
+      "Don't honk unless someone's about to die. Let people merge — throw a shaka.",
+      "Don't touch turtles, monk seals, or coral. Federal offense + deeply disrespectful.",
+      "Sacred sites (heiau) are not photo props. Read the signs, stay on paths.",
+      "'Aloha' is a value, not a greeting gimmick. Patience and kindness go far here.",
+    ],
+    tip: "Locals can tell the difference between a guest and a consumer. Be a guest.",
+    watch: "Trespassing for an Instagram spot (Haiku Stairs, etc.) gets real fines and real rescues.",
+    link: { label: "Travel pono →", url: "https://www.gohawaii.com/malama" }
+  },
+  malama: {
+    title: "Give Back (Mālama)", img: "../images/kailua.jpg", meta: "🌱 Some hotels discount for volunteering",
+    steps: [
+      "Beach cleanups, reforestation, fishpond restoration, and sustainable farming projects all welcome visitors.",
+      "Browse Mālama Hawaiʻi volunteer programs (link below) and book before your trip.",
+      "Many hotels offer a free night or discounts for Mālama volunteers — ask yours.",
+    ],
+    tip: "A morning of volunteering is the most memorable 'activity' most visitors do all trip.",
+    watch: "Book volunteer slots ahead — they fill up like tours do.",
+    link: { label: "Mālama Hawaiʻi programs →", url: "https://www.gohawaii.com/malama" }
+  },
+
+  /* ---- business ---- */
+  register: {
+    title: "Register Your Business", img: "../images/skyline.jpg", meta: "⏱ ~30 min online · 💵 $50 LLC filing",
+    steps: [
+      "Search your name first on the DCCA business name search — make sure it's free.",
+      "File online at Hawaiʻi Business Express (hbe.ehawaii.gov).",
+      "Most small businesses pick LLC — liability protection, simple taxes.",
+      "You'll get your registration certificate by email. Save the PDF.",
+    ],
+    tip: "Do the name search BEFORE you print cards or buy a domain. Ask me how I know.",
+    watch: "Registering the business does NOT give you a tax license — that's the GET license, next step.",
+    link: { label: "Hawaiʻi Business Express →", url: "https://hbe.ehawaii.gov" }
+  },
+  getlicense: {
+    title: "Get Your GET License", img: "../images/skyline.jpg", meta: "⏱ ~20 min · 💵 $20 one-time",
+    steps: [
+      "Hawaiʻi has no sales tax — it has GET (General Excise Tax), and you need a license to do ANY business.",
+      "Apply online at Hawaiʻi Tax Online (Form BB-1). One-time $20 fee.",
+      "You'll get a GE number — put it on invoices.",
+      "File GET returns on schedule (monthly/quarterly/semiannually based on income).",
+    ],
+    tip: "Most businesses pass GET to customers as a 4.712% line item on Oʻahu. Set it up day one.",
+    watch: "Operating without a GET license = penalties + back taxes. This is the step people skip and regret.",
+    link: { label: "Hawaiʻi Tax Online →", url: "https://hitax.hawaii.gov" }
+  },
+  ein: {
+    title: "Get an EIN — Free", img: "../images/skyline.jpg", meta: "⏱ 10 min · 💵 $0 (never pay for this)",
+    steps: [
+      "Go directly to IRS.gov — the EIN is 100% free.",
+      "Apply online, get the number instantly.",
+      "You need it to open a business bank account and hire anyone.",
+      "Open a separate business bank account the same week. Don't mix money.",
+    ],
+    tip: "Banks ask for: EIN letter + registration certificate + your ID. Bring all three, one trip.",
+    watch: "Third-party sites charge $200+ for this free form. Only use IRS.gov.",
+    link: { label: "IRS EIN application →", url: "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number" }
+  },
+  ops: {
+    title: "Run Smoother", img: "../images/shaveice.jpg", kc: true, meta: "⚙️ Fix these in order",
+    steps: [
+      "Missed calls = missed money. Set up a missed-call auto-text: 'Sorry we missed you! Book here: [link]'.",
+      "Online booking (Square, Calendly, etc.) so customers book at midnight when they think of you.",
+      "Digital intake form — stop re-typing customer info.",
+      "Invoice same-day with online payment. Money arrives 2 weeks faster.",
+    ],
+    tip: "One automation a week. Four weeks = a transformed business. Don't do all at once.",
+    watch: "Don't buy a big CRM first. Fix booking and follow-up first — the CRM comes later.",
+    link: { label: "Free advising: Hawaiʻi SBDC →", url: "https://www.hisbdc.org" }
+  },
+  bizhelp: {
+    title: "Free Business Help", img: "../images/skyline.jpg", meta: "🤝 All of this is no-cost",
+    steps: [
+      "Hawaiʻi SBDC — free confidential one-on-one advising, business plans, financials.",
+      "SCORE Hawaiʻi — free mentors who've run businesses themselves.",
+      "SBA Hawaiʻi District — loans (7a, microloans), certifications, disaster help.",
+      "Mink Center / Patsy T. women's business center — workshops and coaching.",
+    ],
+    tip: "SBDC advisors will review your numbers before a bank loan application — use them first.",
+    watch: "These are free. Anyone charging you for 'access' to SBA programs is a middleman.",
+    link: { label: "Book SBDC advising →", url: "https://www.hisbdc.org" }
+  },
+  website: {
+    title: "5-Minute Website Audit", img: "../images/sunset.jpg", kc: true, meta: "🖥️ Test on your PHONE, not desktop",
+    steps: [
+      "Load your site on your phone. Slow = customers gone (most leave after 3 seconds).",
+      "Can a stranger tell what you do + where you are + how to book within 5 seconds?",
+      "Is your phone number tappable? Test it.",
+      "One clear button: 'Book Now' or 'Call Now'. Not six menu items.",
+    ],
+    tip: "Your website has one job: turn a visitor into a call or booking. Cut everything that doesn't.",
+    watch: "A pretty site that doesn't convert is decoration. Measure calls, not compliments.",
+    link: { label: "Test your site speed →", url: "https://pagespeed.web.dev" }
+  },
+  reviews: {
+    title: "Reviews & Photos Engine", img: "../images/shaveice.jpg", kc: true, meta: "⭐ The #1 local ranking factor",
+    steps: [
+      "Get your short Google review link from your Business Profile dashboard.",
+      "Ask at the happy moment — job done, meal finished, smile on face.",
+      "Text the link. 'Mind leaving us a quick review? [link]' — 10x more effective than asking verbally.",
+      "Reply to EVERY review, good and bad, within 48 hours.",
+      "Add 3 new real photos a month — Google rewards fresh photos.",
+    ],
+    tip: "Reply to bad reviews for the READER, not the reviewer. Future customers judge your reply.",
+    watch: "Never buy reviews or review-gate (filtering who gets asked). Google detects and punishes both.",
+    link: { label: "Google Business Profile →", url: "https://google.com/business" }
+  },
+  leads: {
+    title: "Capture Leads Before They Leave", img: "../images/food.jpg", kc: true, meta: "🧲 Most visitors leave without calling",
+    steps: [
+      "Add one offer to your site: '$X off first visit' or 'Free quote in 24 hours'.",
+      "Collect name + phone only. Every extra field costs you signups.",
+      "QR code on your truck/window/receipts → straight to the offer page.",
+      "Respond within 5 minutes when a lead comes in. Speed = closing rate.",
+    ],
+    tip: "A lead answered in 5 minutes converts dramatically better than one answered in an hour.",
+    watch: "Collecting leads you don't follow up on is worse than no leads — it burns your reputation.",
+    link: { label: "Free advising: SBDC →", url: "https://www.hisbdc.org" }
+  },
+  followup: {
+    title: "Follow-Up System", img: "../images/sunset.jpg", kc: true, meta: "📨 Where the real money is",
+    steps: [
+      "Same day: thank-you text after every job/visit.",
+      "Day 3: review ask with your direct link.",
+      "Day 30: check-in or rebooking nudge ('time for your next…').",
+      "Quarterly: one useful text/email to your whole list. Not salesy — useful.",
+    ],
+    tip: "Repeat customers cost far less than new ones. Follow-up is the cheapest marketing that exists.",
+    watch: "Get consent for texts (a checkbox at intake is enough). Don't spam — 1-2 touches a month max.",
+    link: { label: "Free advising: SBDC →", url: "https://www.hisbdc.org" }
+  },
+  annualreport: {
+    title: "Annual Report Filing", img: "../images/skyline.jpg", meta: "📅 ~$15 · takes 10 minutes",
+    steps: [
+      "Every Hawaiʻi business files an annual report with DCCA in its anniversary quarter.",
+      "File online at Hawaiʻi Business Express — it takes minutes.",
+      "Put a recurring reminder in your phone now for your quarter.",
+      "Skip it 2 years = administrative dissolution. Yes, they really dissolve you.",
+    ],
+    tip: "File it the same week you do your GET reconciliation — pair the chores.",
+    watch: "Watch for official-looking 'compliance service' mailers charging $150 for this $15 filing. Scam.",
+    link: { label: "File annual report →", url: "https://hbe.ehawaii.gov" }
+  },
+  getfiling: {
+    title: "GET Tax Filing", img: "../images/skyline.jpg", meta: "🧾 Monthly, quarterly, or semiannual",
+    steps: [
+      "Your filing frequency was assigned when you got the license (based on estimated tax).",
+      "File on Hawaiʻi Tax Online — even $0 periods must be filed.",
+      "Oʻahu rate: 4.5% (4% state + 0.5% county surcharge). Most pass on 4.712%.",
+      "Annual reconciliation (G-49) is due 4 months after your fiscal year ends.",
+    ],
+    tip: "Set aside GET in a separate account the day you're paid. Never 'borrow' from it.",
+    watch: "Filing late on $0 income still triggers penalties. File every period, no matter what.",
+    link: { label: "Hawaiʻi Tax Online →", url: "https://hitax.hawaii.gov" }
+  },
+
+  /* ---- GBP by business type ---- */
+  gbp_dentist: {
+    title: "Google Profile: Dentist", img: "../images/lanikai.jpg", kc: true, meta: "🦷 Patients search 'dentist near me' — win that",
+    steps: [
+      "Claim/verify at google.com/business. Category: 'Dentist' primary, add 'Cosmetic dentist' etc. as secondary.",
+      "Add services with prices or 'call for quote': cleanings, whitening, implants, emergency.",
+      "Enable the 'emergency dental' attributes — high-intent searches.",
+      "Photos: real team + real office (not stock). Patients are choosing who to trust their mouth to.",
+      "Aim for 2+ new reviews a month via post-visit text.",
+    ],
+    tip: "Add 'Hours' for lunch — 'open during lunch' wins working patients deciding between you and the office that closes.",
+    watch: "HIPAA: never confirm someone was a patient when replying to reviews. 'We're sorry to hear this — call us' is the pattern.",
+    link: { label: "Claim your profile →", url: "https://google.com/business" }
+  },
+  gbp_contractor: {
+    title: "Google Profile: Contractor", img: "../images/diamondhead.jpg", kc: true, meta: "🔨 Reviews + photos win bids before you quote",
+    steps: [
+      "Claim profile. Primary category = your main trade (e.g., 'General contractor').",
+      "Set your service AREA (towns you serve), not just an address.",
+      "Upload before/after photos of every job — this is your portfolio now.",
+      "Add your license number to the description. Hawaiʻi customers check.",
+      "Ask for the review when you hand over the keys/final walkthrough.",
+    ],
+    tip: "Post a photo from every single job site (with permission). 100 jobs = 100 fresh photos = Google loves you.",
+    watch: "Unlicensed contracting is a big deal in Hawaiʻi — display your license everywhere; it's a trust weapon.",
+    link: { label: "Claim your profile →", url: "https://google.com/business" }
+  },
+  gbp_restaurant: {
+    title: "Google Profile: Restaurant", img: "../images/food.jpg", kc: true, meta: "🍴 Your profile IS your menu now",
+    steps: [
+      "Claim profile. Upload the FULL menu with prices — keep it current.",
+      "Photos of your 5 best dishes, shot in daylight. These decide more visits than your sign.",
+      "Turn on reservations/order links if you have them.",
+      "Update holiday hours religiously — wrong hours = 1-star reviews from people who drove out.",
+      "Reply to reviews mentioning dishes by name ('Glad the garlic shrimp hit!').",
+    ],
+    tip: "Tourists search 'best [dish] near me'. Put your signature dishes in the business description.",
+    watch: "Out-of-date hours are the #1 cause of angry restaurant reviews. Check them monthly.",
+    link: { label: "Claim your profile →", url: "https://google.com/business" }
+  },
+  gbp_salon: {
+    title: "Google Profile: Salon", img: "../images/shaveice.jpg", kc: true, meta: "✂️ Instagram gets likes, Google gets bookings",
+    steps: [
+      "Claim profile. Add every service with prices — people compare before booking.",
+      "Connect online booking (Square, Booksy, etc.) so they book straight from Google.",
+      "Photos: before/after transformations are your highest-converting content.",
+      "List each stylist's specialty in services (color, fades, bridal).",
+      "Ask for reviews at checkout while the mirror glow is fresh.",
+    ],
+    tip: "Add 'walk-ins welcome' or booking attributes — that one toggle wins same-day searches.",
+    watch: "Don't let your profile show old prices. Stale prices create checkout arguments and bad reviews.",
+    link: { label: "Claim your profile →", url: "https://google.com/business" }
+  },
+  gbp_retail: {
+    title: "Google Profile: Retail Shop", img: "../images/skyline.jpg", kc: true, meta: "🛍️ Win 'open now near me' searches",
+    steps: [
+      "Claim profile. Exact hours, exact location pin (check the map pin yourself).",
+      "Add products with photos — Google shows them in searches.",
+      "Post weekly: new arrivals, weekend sales. Posts expire, fresh ones rank.",
+      "Add attributes: 'locally owned', 'free parking' — these filter searches.",
+      "Reviews: a card at the register with a QR code straight to the review link.",
+    ],
+    tip: "Tourists filter for 'locally owned' on Oʻahu specifically. If you are, say it everywhere.",
+    watch: "If your pin is off by one block, foot traffic literally walks to the wrong place. Verify it.",
+    link: { label: "Claim your profile →", url: "https://google.com/business" }
+  },
+
+  /* ---- local ---- */
+  license: {
+    title: "Driver's License / State ID", img: "../images/thebus.jpg", meta: "🪪 Appointments beat walk-ins",
+    steps: [
+      "Book an appointment via the Customer Services site — walk-in waits run hours.",
+      "Renewal: do it online if eligible — skip the trip entirely.",
+      "Bring: proof of legal presence + 2 proofs of address (REAL ID requires originals).",
+      "Satellite city halls handle most ID stuff — often faster than the main DMV.",
+    ],
+    tip: "Satellite city halls are usually quieter than Kapālama Hale downtown. Go at opening.",
+    watch: "Photocopies don't count for REAL ID documents. Originals or certified copies only.",
+    link: { label: "Honolulu Customer Services →", url: "https://www.honolulu.gov/csd" }
+  },
+  vehicle: {
+    title: "Vehicle Registration", img: "../images/thebus.jpg", meta: "🚗 Renew online, skip the line",
+    steps: [
+      "Renew online via the Customer Services site — emblem mails to you.",
+      "Safety check first if expired — registration renewal requires a current one.",
+      "Moving here? You have 30 days to register an out-of-state vehicle.",
+      "Self-service kiosks at some grocery stores print the emblem on the spot.",
+    ],
+    tip: "The kiosk at the grocery store takes 3 minutes. It's the cheat code nobody uses.",
+    watch: "Expired safety check = can't renew = ticket risk compounds. Do safety check first, always.",
+    link: { label: "Renew online →", url: "https://www.honolulu.gov/csd" }
+  },
+  bulky: {
+    title: "Bulky Item Pickup", img: "../images/kailua.jpg", meta: "🛋️ Free, but appointment required",
+    steps: [
+      "Book online at opala.org — pickups are by appointment now, not a set monthly day.",
+      "Put items out no earlier than 6pm the night before your date.",
+      "Allowed: furniture, mattresses, appliances. Not allowed: construction debris, auto parts.",
+      "Or drop off free at a city convenience center.",
+    ],
+    tip: "Book 1–2 weeks ahead — slots fill. Photograph items placed out, in case of disputes.",
+    watch: "Putting bulky items out without an appointment is an illegal dumping fine, even on your own curb.",
+    link: { label: "Book bulky pickup →", url: "https://opala.org" }
+  },
+  trashday: {
+    title: "Trash & Recycling Schedule", img: "../images/kailua.jpg", meta: "🗑️ Gray, blue, green carts",
+    steps: [
+      "Look up your address schedule at opala.org.",
+      "Gray = trash (weekly), Blue = mixed recycling, Green = green waste (alternating weeks).",
+      "Carts out by 6am, off the street by evening.",
+      "HI-5 bottles/cans: redeem at certified centers for your 5¢ back.",
+    ],
+    tip: "Holiday weeks shift pickup by a day — opala.org posts the holiday schedule.",
+    watch: "Wrong items in the blue cart (plastic bags!) can get the whole cart skipped.",
+    link: { label: "Find your schedule →", url: "https://opala.org" }
+  },
+  report: {
+    title: "Report a City Problem", img: "../images/skyline.jpg", meta: "📢 Potholes, streetlights, dumping",
+    steps: [
+      "Report at hnl311.com or download the HNL 311 app — the city's new system routes 70+ categories to the right department.",
+      "Snap a photo, pin the location, pick a category. Two minutes.",
+      "You get a tracking number and status updates.",
+      "Prefer the phone? Pothole hotline: (808) 768-7777.",
+    ],
+    tip: "Reports with photos get handled faster. Always attach one.",
+    watch: "Emergencies (downed lines, water main breaks) = call, don't app. 911 or the utility.",
+    link: { label: "HNL 311 →", url: "https://hnl311.com" }
+  },
+  hnlalert: {
+    title: "Emergency Alerts (HNL Alert)", img: "../images/northshore.jpg", meta: "🚨 2 minutes, could save your life",
+    steps: [
+      "Sign up at hnlalert.gov — text + email alerts from the city.",
+      "Choose your neighborhoods (home, work, kids' school).",
+      "Covers: tsunami, hurricane, flash flood, brush fire, road closures.",
+      "Sirens test the 1st business day monthly at 11:45am.",
+    ],
+    tip: "Add your elderly relatives' phones when you sign up. They won't do it themselves.",
+    watch: "A siren OUTSIDE the monthly test = act immediately. Coastal? Move mauka (inland/uphill) first, ask later.",
+    link: { label: "Sign up →", url: "https://hnlalert.gov" }
+  },
+  help211: {
+    title: "Find Help — Dial 211", img: "../images/hibiscus.jpg", meta: "🤝 Free, confidential, statewide",
+    steps: [
+      "Aloha United Way 211 connects you to food, housing, utility, childcare, senior, and crisis resources.",
+      "Call or text 211, or search their online directory.",
+      "It's free and confidential — trained specialists, not a phone tree.",
+      "For mental health crisis: call or text 988.",
+    ],
+    tip: "211 specialists know programs that never show up in a Google search. Just describe your situation.",
+    watch: "If it's an emergency happening right now, that's 911 — 211 is for finding services and support.",
+    link: { label: "Aloha United Way 211 →", url: "https://www.auw.org/211" }
+  },
+};
+
+/* Explore tab grouping */
+const groups = [
+  { label: "🏠 Your Stay", ids: ["mh_checkin","mh_supplies","mh_rules","mh_parking","mh_laundry","mh_food","mh_beach","mh_support"] },
+  { label: "📷 Around the Island", ids: ["oneday","threeday","week","stay","beach","food","hike","rainy","nocar","airport","thebus","surfsafety","emergency","etiquette","malama"] },
+];
+
+/* Alerts tab — live-conditions hub */
+const alertLinks = [
+  { label: "Emergency alerts (HNL Alert)", icon: "🚨", color: "coral", url: "https://hnlalert.gov" },
+  { label: "Beach & surf conditions",      icon: "🌊", color: "teal",  url: "https://safebeachday.com" },
+  { label: "Weather & warnings (NWS)",     icon: "🌦️", color: "blue",  url: "https://www.weather.gov/hfo/" },
+  { label: "TheBus service updates",       icon: "🚌", color: "green", url: "https://www.thebus.org" },
+];
+
+/* Photo credits — Wikimedia Commons. Required attribution for CC-BY/CC-BY-SA images. */
+const PHOTO_CREDITS = [
+  { img: "../images/bg.jpg",          artist: "Frank Schulenburg",                       license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Waikiki_Beach_(2024)-L1004709.jpg" },
+  { img: "../images/diamondhead.jpg", artist: "Matt Kieffer",                            license: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Diamond_Head_Crater_Park.jpg" },
+  { img: "../images/lanikai.jpg",     artist: "claralieu",                               license: "CC BY 2.0",    url: "https://commons.wikimedia.org/wiki/File:Lanikai_Beach_09.jpg" },
+  { img: "../images/hanauma.jpg",     artist: "Diego Delso",                             license: "CC BY-SA 3.0", url: "https://commons.wikimedia.org/wiki/File:Hanauma_Bay,_Oahu,_Hawaii,_USA2.jpg" },
+  { img: "../images/food.jpg",        artist: "christian razukas",                       license: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Wardsplatelunch.jpg" },
+  { img: "../images/shaveice.jpg",    artist: "Kim",                                     license: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Fumi%27s_Shave_Ice_(3848642715).jpg" },
+  { img: "../images/hike.jpg",        artist: "Daniel Ramirez",                          license: "CC BY 2.0",    url: "https://commons.wikimedia.org/wiki/File:Manoa_Falls_Trail_(8330330105).jpg" },
+  { img: "../images/skyline.jpg",     artist: "Mcmrose",                                 license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Waikiki-waikiki-beach-aerial-photography_2.jpg" },
+  { img: "../images/pearlharbor.jpg", artist: "U.S. Navy / PH3 Jayme Pastoric",          license: "Public domain", url: "https://commons.wikimedia.org/wiki/File:USS_Arizona_Memorial_(aerial_view).jpg" },
+  { img: "../images/hibiscus.jpg",    artist: "Pseudopanax",                             license: "Public domain", url: "https://commons.wikimedia.org/wiki/File:Hawaiian_hibiscus_(Hibiscus_x_rosa-sinensis)_flower_and_leaves_(Niue).jpg" },
+  { img: "../images/sunset.jpg",      artist: "Diego Delso",                             license: "CC BY-SA 3.0", url: "https://commons.wikimedia.org/wiki/File:Sunset_next_to_Waikiki_Beach,_Oahu,_Hawai,_USA1.jpg" },
+  { img: "../images/kailua.jpg",      artist: "Tony Webster",                            license: "CC BY 2.0",    url: "https://commons.wikimedia.org/wiki/File:Kailua_Beach_Park_-_Oahu_-_Hawaii.jpg" },
+  { img: "../images/northshore.jpg",  artist: "Johannes Andersson",                      license: "CC0",          url: "https://commons.wikimedia.org/wiki/File:Surfing_in_the_blue_(Unsplash).jpg" },
+  { img: "../images/thebus.jpg",      artist: "eli fessler",                             license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Honolulu_Skyline_train.jpg" },
+];
+
+/* =========================================================
+   Saved items (localStorage)
+   ========================================================= */
+const SAVE_KEY = "op-saved-v1";
+function getSaved() {
+  try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || []; }
+  catch { return []; }
+}
+function setSaved(list) {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(list)); } catch {}
+}
+function toggleSave(id) {
+  const list = getSaved();
+  const i = list.indexOf(id);
+  if (i >= 0) list.splice(i, 1); else list.push(id);
+  setSaved(list);
+  render();
+}
+
+/* =========================================================
+   Hash router — history-friendly, deep-linkable.
+   ========================================================= */
+const main = document.getElementById("main");
+
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+function chip(opt) {
+  if (opt.img) {
+    return `<button class="photochip${opt.tall ? " tall" : ""}" data-go="${opt.go}">
+      <span class="pcimg" style="background-image:url('${opt.img}')"></span>
+      <span class="pcshade"></span>
+      <span class="pcicon" aria-hidden="true">${opt.icon}</span>
+      <span class="pclabel">${esc(opt.label)}</span>
+      <span class="pcchev" aria-hidden="true">›</span>
+    </button>`;
+  }
+  return `<button class="btn ${opt.color}" data-go="${opt.go}">
+    <span class="icon" aria-hidden="true">${opt.icon}</span>
+    <span class="label">${esc(opt.label)}</span>
+    <span class="chev" aria-hidden="true">›</span>
+  </button>`;
+}
+
+function hero(imgUrl, title) {
+  return `<div class="hero">
+    <div class="heroimg" style="background-image:url('${imgUrl}')"></div>
+    <div class="heroshade"></div>
+    <h2 class="herotitle">${esc(title)}</h2>
+  </div>`;
+}
+
+function backRow() {
+  return `<div class="backrow"><button class="backbtn" data-back>‹ Back</button></div>`;
+}
+
+function credit() {
+  return `<footer class="credit">Built with aloha by <b>${esc(CONFIG.ownerName)}</b> · ${esc(CONFIG.ownerPitch)}
+    <a href="mailto:${CONFIG.ownerContact}">${CONFIG.ownerContact}</a>
+    · <button class="linklike" data-appqr>📱 Get this app</button>
+    · <button class="linklike" data-go="t/credits">Photo credits</button></footer>`;
+}
+
+function drawNode(id, isHome) {
+  const n = nodes[id];
+  if (!n) return drawNode("root", true);
+  main.innerHTML = `<div class="screen">
+    ${isHome ? "" : backRow()}
+    ${n.hero ? hero(n.hero, n.q) : `<h2 class="question">${esc(n.q)}</h2>`}
+    ${n.sub || !n.hero ? `<p class="sub">${esc(n.sub || "")}</p>` : ""}
+    ${n.options.map(chip).join("")}
+    ${isHome ? credit() : ""}
+  </div>`;
+  main.scrollTop = 0;
+}
+
+function kcOffer(title) {
+  const subject = encodeURIComponent("Help me with: " + title);
+  return `<div class="kcbox"><b>🌺 Kind Codex builds this for you</b>
+    Done-for-you setup — websites, Google profiles, review engines, lead capture &amp; follow-up systems for Oʻahu businesses.
+    <a class="kcbtn" href="mailto:${CONFIG.ownerContact}?subject=${subject}">✉️ ${CONFIG.ownerContact}</a>
+  </div>`;
+}
+
+function drawResult(id) {
+  const r = results[id];
+  if (!r) return drawNode("root", true);
+  const saved = getSaved().includes(id);
+  main.innerHTML = `<div class="screen">
+    ${backRow()}
+    <article class="card">
+      <div class="cardimg">
+        <div class="ciimg" style="background-image:url('${r.img}')"></div>
+        <div class="cishade"></div>
+        <h2>${esc(r.title)}</h2>
+        <button class="savebtn" data-save="${id}" aria-pressed="${saved}">${saved ? "❤️ Saved" : "🤍 Save"}</button>
+      </div>
+      <div class="cardbody">
+        <div class="meta">${esc(r.meta)}</div>
+        <ol>${r.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
+        <div class="tip"><b>🤙 Local tip</b>${esc(r.tip)}</div>
+        <div class="watch"><b>⚠️ Watch out</b>${esc(r.watch)}</div>
+        ${r.kc ? kcOffer(r.title) : ""}
+        <a class="linkbtn" href="${r.link.url}" target="_blank" rel="noopener">${esc(r.link.label)}</a>
+      </div>
+    </article>
+    ${credit()}
+  </div>`;
+  main.scrollTop = 0;
+}
+
+function drawExplore() {
+  main.innerHTML = `<div class="screen">
+    <h2 class="question">Explore everything</h2>
+    <p class="sub">Every answer in the app, in one place.</p>
+    ${groups.map((g) => `
+      <h3 class="sectionhead">${g.label}</h3>
+      ${g.ids.map((id) => {
+        const r = results[id];
+        return `<button class="btn small navybtn" data-go="r/${id}">
+          <span class="label">${esc(r.title)}</span>
+          <span class="chev" aria-hidden="true">›</span>
+        </button>`;
+      }).join("")}
+    `).join("")}
+    ${credit()}
+  </div>`;
+  main.scrollTop = 0;
+}
+
+function drawAlerts() {
+  main.innerHTML = `<div class="screen">
+    <h2 class="question">Live conditions</h2>
+    <p class="sub">Check before you go. In an emergency, call 911.</p>
+    ${alertLinks.map((a) => `
+      <a class="btn ${a.color}" style="text-decoration:none" href="${a.url}" target="_blank" rel="noopener">
+        <span class="icon" aria-hidden="true">${a.icon}</span>
+        <span class="label">${esc(a.label)}</span>
+        <span class="chev" aria-hidden="true">↗</span>
+      </a>`).join("")}
+    <button class="photochip" data-go="r/emergency">
+      <span class="pcimg" style="background-image:url('../images/northshore.jpg')"></span>
+      <span class="pcshade"></span>
+      <span class="pcicon" aria-hidden="true">🚨</span>
+      <span class="pclabel">Emergency basics</span>
+      <span class="pcchev" aria-hidden="true">›</span>
+    </button>
+    ${credit()}
+  </div>`;
+  main.scrollTop = 0;
+}
+
+function drawSavedTab() {
+  const list = getSaved();
+  main.innerHTML = `<div class="screen">
+    <h2 class="question">Saved</h2>
+    <p class="sub">Your bookmarked answers — stored on this device.</p>
+    ${list.length
+      ? list.map((id) => results[id] ? `
+        <button class="photochip" data-go="r/${id}">
+          <span class="pcimg" style="background-image:url('${results[id].img}')"></span>
+          <span class="pcshade"></span>
+          <span class="pcicon" aria-hidden="true">❤️</span>
+          <span class="pclabel">${esc(results[id].title)}</span>
+          <span class="pcchev" aria-hidden="true">›</span>
+        </button>` : "").join("")
+      : `<div class="empty">Nothing saved yet.<br>Open any answer and tap 🤍 Save to keep it here.</div>`}
+    ${credit()}
+  </div>`;
+  main.scrollTop = 0;
+}
+
+function drawCredits() {
+  main.innerHTML = `<div class="screen">
+    ${backRow()}
+    <h2 class="question">Photo credits</h2>
+    <p class="sub">Photography via Wikimedia Commons — mahalo to these photographers.</p>
+    ${PHOTO_CREDITS.map((c) => `
+      <a class="creditrow" href="${c.url}" target="_blank" rel="noopener">
+        <img src="${c.img}" alt="" loading="lazy">
+        <span><b>${esc(c.artist)}</b>${esc(c.license)} · Wikimedia Commons</span>
+      </a>`).join("")}
+    ${credit()}
+  </div>`;
+  main.scrollTop = 0;
+}
+
+function syncNav(activeId) {
+  ["nav-home", "nav-explore", "nav-alerts", "nav-saved"].forEach((id) => {
+    document.getElementById(id).classList.toggle("active", id === activeId);
+  });
+}
+
+function render() {
+  const h = (location.hash || "#t/home").slice(1);
+  const slash = h.indexOf("/");
+  const kind = slash > 0 ? h.slice(0, slash) : "t";
+  const id = slash > 0 ? h.slice(slash + 1) : "home";
+
+  if (kind === "n") { drawNode(id, false); syncNav("nav-home"); }
+  else if (kind === "r") { drawResult(id); syncNav("nav-home"); }
+  else if (id === "explore") { drawExplore(); syncNav("nav-explore"); }
+  else if (id === "alerts") { drawAlerts(); syncNav("nav-alerts"); }
+  else if (id === "saved") { drawSavedTab(); syncNav("nav-saved"); }
+  else if (id === "credits") { drawCredits(); syncNav("nav-home"); }
+  else { drawNode("root", true); syncNav("nav-home"); }
+}
+
+/* =========================================================
+   KIOSK MODE — for the locked tablet (Guided Access).
+   Toggle: triple-tap the logo. While ON:
+   - external links & emails show a QR code instead of opening
+   - session auto-resets to Home after 2 min of no touches
+   - "Start over" button appears in the header
+   - long-press, text selection, and pinch-zoom are blocked
+   - the screen is asked to stay awake (iOS 16.4+, HTTPS)
+   ========================================================= */
+const KIOSK_KEY = "op-kiosk";
+const IDLE_MS = 120000;
+
+function isKiosk() {
+  try { return localStorage.getItem(KIOSK_KEY) === "1"; } catch { return false; }
+}
+function setKiosk(on) {
+  try { on ? localStorage.setItem(KIOSK_KEY, "1") : localStorage.removeItem(KIOSK_KEY); } catch {}
+  applyKiosk();
+  pokeIdle();
+  toast(on ? "Kiosk mode ON — links show QR codes, session auto-resets"
+           : "Kiosk mode OFF — links open normally");
+}
+function applyKiosk() {
+  document.body.classList.toggle("kiosk", isKiosk());
+  if (isKiosk()) requestWake();
+}
+
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+function showQR(url, title) {
+  const qr = qrcode(0, "M");
+  qr.addData(url);
+  qr.make();
+  document.getElementById("qrsvg").innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  document.getElementById("qrtitle").textContent = title || "Open on your phone";
+  document.getElementById("qrdomain").textContent = url.replace(/^(mailto:|tel:)/, "").split("?")[0];
+  document.getElementById("qrmodal").classList.add("open");
+}
+function hideQR() { document.getElementById("qrmodal").classList.remove("open"); }
+
+function resetSession() {
+  setSaved([]);
+  hideQR();
+  if (location.hash === "#t/home" || location.hash === "") render();
+  else location.hash = "t/home";
+  main.scrollTop = 0;
+  toast("Fresh session — aloha! 🌺");
+}
+
+/* idle auto-reset (kiosk only) */
+let idleTimer;
+function pokeIdle() {
+  clearTimeout(idleTimer);
+  if (isKiosk()) idleTimer = setTimeout(resetSession, IDLE_MS);
+}
+["pointerdown", "keydown", "touchstart"].forEach((ev) =>
+  document.addEventListener(ev, pokeIdle, { passive: true }));
+
+/* keep the screen awake while in kiosk mode (best effort) */
+let wakeLock = null;
+async function requestWake() {
+  try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch {}
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && isKiosk()) requestWake();
+});
+
+/* triple-tap the logo to toggle kiosk mode */
+let logoTaps = [];
+document.getElementById("logotap").addEventListener("click", () => {
+  const now = Date.now();
+  logoTaps = logoTaps.filter((t) => now - t < 1200);
+  logoTaps.push(now);
+  if (logoTaps.length >= 3) { logoTaps = []; setKiosk(!isKiosk()); }
+});
+document.getElementById("resetbtn").addEventListener("click", resetSession);
+document.getElementById("qrmodal").addEventListener("click", (e) => {
+  if (e.target.id === "qrmodal") hideQR();
+});
+
+/* block long-press menus and pinch zoom in kiosk mode */
+document.addEventListener("contextmenu", (e) => { if (isKiosk()) e.preventDefault(); });
+document.addEventListener("gesturestart", (e) => { if (isKiosk()) e.preventDefault(); });
+
+/* event delegation */
+document.addEventListener("click", (e) => {
+  if (e.target.closest("[data-qrdone]")) { hideQR(); return; }
+  const appqr = e.target.closest("[data-appqr]");
+  if (appqr) {
+    showQR(location.origin + location.pathname, "Take this app with you");
+    return;
+  }
+  const a = e.target.closest("a[href]");
+  if (a && isKiosk() && /^(https?:|mailto:|tel:)/.test(a.getAttribute("href"))) {
+    e.preventDefault();
+    const href = a.getAttribute("href");
+    showQR(a.href, href.startsWith("mailto:") ? "Email us from your phone"
+      : href.startsWith("tel:") ? "Call us from your phone" : "Open on your phone");
+    return;
+  }
+  const go = e.target.closest("[data-go]");
+  if (go) { location.hash = go.dataset.go; return; }
+  const back = e.target.closest("[data-back]");
+  if (back) {
+    if (history.length > 1) history.back();
+    else location.hash = "t/home";
+    return;
+  }
+  const save = e.target.closest("[data-save]");
+  if (save) { toggleSave(save.dataset.save); }
+});
+
+window.addEventListener("hashchange", render);
+applyKiosk();
+pokeIdle();
+render();
+
+/* offline support */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("../sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

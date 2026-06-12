@@ -78,6 +78,22 @@ To spin up a new property:
 
 Pitch tip: make a prospect's edition *before* the meeting — it takes minutes.
 
+### Live property editions
+
+| Property | Path | Notes |
+|---|---|---|
+| Mauka Lani (fictional demo) | `/hotel/` | All data is demo placeholder |
+| White Sands Hotel | `/whitesands/` | Venues verified on whitesandshotel.com |
+| The Surfjack Hotel & Swim Club | `/surfjack/` | Content verified on surfjack.com |
+| Marina Hawaii Vacations | `/marina/` | Buildings/phones verified on marinahawaiivacations.com |
+
+**Confirm before launch (with each property):** hours, prices, parking rates/options,
+housekeeping fees, after-hours procedures, and dog rules. White Sands specifically:
+the surf school / yacht charter / Roberts Hawaii shuttle partnerships from the design
+brief are NOT on their website and were left out — confirm with the hotel and add them
+only if real. These pages are unsolicited pitch demos until a property signs off —
+get their approval before printing QR cards or putting a tablet in their lobby.
+
 ## Editing content
 
 All content lives in two plain objects near the top of the script in `index.html`:

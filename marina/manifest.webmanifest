@@ -1,0 +1,15 @@
+{
+  "name": "Marina Hawaii Vacations — Stay Guide",
+  "short_name": "Stay Guide",
+  "description": "Marina Hawaii Vacations — check-in help, parking, laundry, beach & lagoon, food nearby, and property support.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#cfeef5",
+  "theme_color": "#cfeef5",
+  "icons": [
+    { "src": "../icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

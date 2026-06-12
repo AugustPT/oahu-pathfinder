@@ -12,6 +12,9 @@ Single-page PWA — no build step, no framework, no backend.
 | `manifest.webmanifest` | PWA manifest — name, icons, fullscreen install |
 | `icon-512.png`, `icon-192.png`, `apple-touch-icon.png` | App icons (regenerate with `build-icons.ps1`) |
 | `build-icons.ps1` | Regenerates the icon PNGs (Windows PowerShell) |
+| `images/` | Photography (Wikimedia Commons, see `CREDITS.md`) |
+| `fetch_images.py`, `refetch.py`, `make_credits.py` | Tooling that downloads/refreshes the photos and credits |
+| `CREDITS.md`, `credits.json` | Photo attribution (required by the CC licenses) |
 
 ## Before you ship
 

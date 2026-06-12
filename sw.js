@@ -1,12 +1,26 @@
 /* Oʻahu Pathfinder service worker — app shell cache, offline-first. */
-const CACHE = 'oahu-pathfinder-v1.0.1';
+const CACHE = 'oahu-pathfinder-v1.1.0';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
-  './apple-touch-icon.png'
+  './apple-touch-icon.png',
+  './images/bg.jpg',
+  './images/diamondhead.jpg',
+  './images/lanikai.jpg',
+  './images/hanauma.jpg',
+  './images/food.jpg',
+  './images/shaveice.jpg',
+  './images/hike.jpg',
+  './images/skyline.jpg',
+  './images/pearlharbor.jpg',
+  './images/hibiscus.jpg',
+  './images/sunset.jpg',
+  './images/kailua.jpg',
+  './images/northshore.jpg',
+  './images/thebus.jpg'
 ];
 
 self.addEventListener('install', (e) => {

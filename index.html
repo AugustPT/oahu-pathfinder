@@ -21,9 +21,7 @@
     --blue:    #2274b5;
     --purple:  #8b6cc1;
     --coral:   #f07057;
-    --gold:    #e8b021;
     --navy:    #1b3a6b;
-    --sand:    #faf3e3;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -32,28 +30,39 @@
   body {
     font-family: Georgia, 'Times New Roman', serif;
     color: var(--navy);
-    background:
-      linear-gradient(180deg,
-        #cfeef5 0%, #a8dfee 18%, #7fd0e4 32%,
-        #5fc4d8 44%, #8ed9d2 58%, #d8ecc9 72%,
-        #f6ecd2 85%, #f3e3bd 100%);
-    background-attachment: fixed;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: #cfeef5;
+  }
+
+  /* ---------- photo backdrop (fixed div: works on iOS where bg-attachment:fixed fails) ---------- */
+  #backdrop {
+    position: fixed; inset: 0; z-index: -1;
+    background: url('images/bg.jpg') center / cover no-repeat;
+  }
+  #backdrop::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,.82) 0%,
+      rgba(255,255,255,.55) 16%,
+      rgba(231,247,252,.38) 45%,
+      rgba(250,243,227,.62) 100%);
   }
 
   /* ---------- header ---------- */
   header {
     text-align: center;
-    padding: max(env(safe-area-inset-top), 14px) 16px 6px;
+    padding: max(env(safe-area-inset-top), 12px) 16px 8px;
     flex-shrink: 0;
   }
-  .logo { width: 60px; height: 60px; margin: 0 auto 4px; display: block; }
-  h1 { font-size: 28px; letter-spacing: 0.5px; }
+  .logo { width: 56px; height: 56px; margin: 0 auto 2px; display: block;
+          filter: drop-shadow(0 2px 6px rgba(27,58,107,.25)); }
+  h1 { font-size: 28px; letter-spacing: 0.5px; text-shadow: 0 1px 0 rgba(255,255,255,.8); }
   .tagline {
     font-family: -apple-system, 'Segoe UI', sans-serif;
-    font-size: 13px; color: #3a5a86; margin-top: 2px;
+    font-size: 13px; color: #2c4a74; margin-top: 1px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.7);
   }
   .divider {
     display: flex; align-items: center; justify-content: center;
@@ -61,7 +70,7 @@
     color: var(--coral); font-size: 14px;
   }
   .divider::before, .divider::after {
-    content: ""; flex: 1; height: 1px; background: rgba(27,58,107,.25);
+    content: ""; flex: 1; height: 1px; background: rgba(27,58,107,.3);
   }
 
   /* ---------- main ---------- */
@@ -75,27 +84,87 @@
     margin: 0 auto;
   }
 
-  .question { text-align: center; font-size: 26px; margin: 10px 0 2px; }
+  .question { text-align: center; font-size: 26px; margin: 8px 0 2px;
+              text-shadow: 0 1px 0 rgba(255,255,255,.7); }
   .sub {
     text-align: center;
     font-family: -apple-system, 'Segoe UI', sans-serif;
-    font-size: 14px; color: #3a5a86; margin-bottom: 16px;
+    font-size: 14px; color: #2c4a74; margin-bottom: 14px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.6);
   }
-  .sectionhead {
-    font-size: 21px; margin: 18px 0 10px;
+  .sectionhead { font-size: 21px; margin: 18px 0 10px; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+
+  /* ---------- hero banner with slow zoom ---------- */
+  .hero {
+    position: relative; overflow: hidden;
+    height: 130px; border-radius: 22px;
+    margin-bottom: 14px;
+    box-shadow: 0 6px 20px rgba(27,58,107,.3);
+  }
+  .hero .heroimg {
+    position: absolute; inset: 0;
+    background-position: center; background-size: cover;
+    animation: kenburns 18s ease-in-out infinite alternate;
+  }
+  .hero .heroshade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,30,60,0) 30%, rgba(10,30,60,.62) 100%);
+  }
+  .hero .herotitle {
+    position: absolute; left: 18px; right: 18px; bottom: 12px;
+    color: #fff; font-size: 26px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.55);
+  }
+  @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.12); } }
+
+  /* ---------- photo card buttons ---------- */
+  .photochip {
+    position: relative; display: block; width: 100%;
+    height: 120px; border: none; border-radius: 20px;
+    overflow: hidden; cursor: pointer;
+    margin-bottom: 14px; padding: 0;
+    box-shadow: 0 5px 16px rgba(27,58,107,.3);
+    transition: transform .08s ease;
+    color: #fff; font-family: inherit; text-align: left;
+  }
+  .photochip.tall { height: 150px; }
+  .photochip:active { transform: scale(.97); }
+  .photochip:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .photochip .pcimg {
+    position: absolute; inset: 0;
+    background-position: center; background-size: cover;
+    transition: transform .25s ease;
+  }
+  .photochip:active .pcimg { transform: scale(1.05); }
+  .photochip .pcshade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,30,60,.05) 25%, rgba(10,30,60,.68) 100%);
+  }
+  .photochip .pclabel {
+    position: absolute; left: 18px; bottom: 12px; right: 50px;
+    font-size: 26px; text-shadow: 0 2px 8px rgba(0,0,0,.6);
+  }
+  .photochip.tall .pclabel { font-size: 30px; }
+  .photochip .pcicon {
+    position: absolute; left: 18px; top: 12px; font-size: 24px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.5);
+  }
+  .photochip .pcchev {
+    position: absolute; right: 16px; bottom: 12px;
+    font-size: 26px; opacity: .95; text-shadow: 0 2px 6px rgba(0,0,0,.5);
   }
 
-  /* ---------- big buttons ---------- */
+  /* ---------- color buttons (for option lists without photos) ---------- */
   .btn {
     display: flex; align-items: center; gap: 16px;
     width: 100%;
     border: none; border-radius: 18px;
-    padding: 20px 22px;
-    margin-bottom: 14px;
+    padding: 19px 22px;
+    margin-bottom: 13px;
     font-family: inherit;
     font-size: 23px; color: #fff; text-align: left;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(27,58,107,.25);
+    box-shadow: 0 4px 14px rgba(27,58,107,.28);
     transition: transform .08s ease;
   }
   .btn:active { transform: scale(.97); }
@@ -111,40 +180,57 @@
   .blue   { background: linear-gradient(180deg, #2f86c9, #1b62a0); }
   .purple { background: linear-gradient(180deg, #9a7cd0, #7257ab); }
   .coral  { background: linear-gradient(180deg, #f4806a, #e35a40); }
-  .gold   { background: linear-gradient(180deg, #f0bd35, #d49c12); }
   .navybtn{ background: linear-gradient(180deg, #2a4f8f, #1b3a6b); }
 
   /* ---------- back row ---------- */
   .backrow { display: flex; align-items: center; gap: 8px; margin: 2px 0 10px; }
   .backbtn {
-    border: none; background: rgba(255,255,255,.78);
+    border: none; background: rgba(255,255,255,.85);
     color: var(--navy); font-size: 15px; font-weight: 600;
     font-family: -apple-system, 'Segoe UI', sans-serif;
     padding: 9px 18px; border-radius: 999px; cursor: pointer;
-    box-shadow: 0 2px 6px rgba(27,58,107,.15);
+    box-shadow: 0 2px 6px rgba(27,58,107,.2);
   }
   .backbtn:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
 
-  /* ---------- result card ---------- */
+  /* ---------- result card with photo header ---------- */
   .card {
-    background: rgba(255,255,255,.93);
+    background: rgba(255,255,255,.95);
     border-radius: 22px;
-    padding: 24px;
-    box-shadow: 0 6px 22px rgba(27,58,107,.18);
+    overflow: hidden;
+    box-shadow: 0 6px 22px rgba(27,58,107,.22);
     margin-bottom: 16px;
   }
-  .cardtop { display: flex; align-items: flex-start; gap: 10px; }
-  .cardtop h2 { font-size: 25px; margin-bottom: 4px; flex: 1; }
+  .cardimg {
+    position: relative; height: 175px; overflow: hidden;
+  }
+  .cardimg .ciimg {
+    position: absolute; inset: 0;
+    background-position: center; background-size: cover;
+    animation: kenburns 18s ease-in-out infinite alternate;
+  }
+  .cardimg .cishade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,30,60,0) 35%, rgba(10,30,60,.7) 100%);
+  }
+  .cardimg h2 {
+    position: absolute; left: 20px; right: 110px; bottom: 12px;
+    color: #fff; font-size: 26px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.6);
+  }
   .savebtn {
-    border: 1.5px solid rgba(27,58,107,.3);
-    background: #fff; color: var(--navy);
+    position: absolute; right: 14px; top: 12px;
+    border: none; background: rgba(255,255,255,.92);
+    color: var(--navy);
     font-family: -apple-system, 'Segoe UI', sans-serif;
     font-size: 14px; font-weight: 600;
-    border-radius: 999px; padding: 7px 14px;
-    cursor: pointer; flex-shrink: 0; margin-top: 2px;
+    border-radius: 999px; padding: 8px 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
   }
-  .savebtn[aria-pressed="true"] { background: #fdeae4; border-color: var(--coral); color: #b3402a; }
-  .savebtn:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
+  .savebtn[aria-pressed="true"] { background: #fdeae4; color: #b3402a; }
+  .savebtn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .cardbody { padding: 18px 24px 24px; }
   .card .meta {
     font-family: -apple-system, 'Segoe UI', sans-serif;
     font-size: 13px; color: #3a5a86; margin-bottom: 14px;
@@ -178,17 +264,30 @@
     text-align: center;
     font-family: -apple-system, 'Segoe UI', sans-serif;
     font-size: 15px; color: #3a5a86;
-    background: rgba(255,255,255,.7);
+    background: rgba(255,255,255,.8);
     border-radius: 18px; padding: 28px 20px; margin-top: 12px;
   }
+
+  /* ---------- photo credits screen ---------- */
+  .creditrow {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,.9);
+    border-radius: 16px; padding: 10px;
+    margin-bottom: 10px;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    font-size: 13px; color: #3a5a86;
+    text-decoration: none;
+  }
+  .creditrow img { width: 84px; height: 56px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+  .creditrow b { color: var(--navy); display: block; font-size: 14px; }
 
   /* ---------- bottom nav ---------- */
   nav {
     flex-shrink: 0;
-    background: rgba(255,255,255,.92);
+    background: rgba(255,255,255,.93);
     backdrop-filter: blur(8px);
     border-radius: 24px 24px 0 0;
-    box-shadow: 0 -4px 18px rgba(27,58,107,.12);
+    box-shadow: 0 -4px 18px rgba(27,58,107,.15);
     display: flex; justify-content: space-around;
     padding: 10px 8px max(env(safe-area-inset-bottom), 12px);
     font-family: -apple-system, 'Segoe UI', sans-serif;
@@ -204,27 +303,48 @@
   nav button.active { color: var(--blue); font-weight: 700; }
   nav button:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 
-  /* ---------- transitions & footer ---------- */
-  .screen { animation: slidein .22s ease; }
-  @keyframes slidein {
-    from { opacity: 0; transform: translateX(28px); }
-    to   { opacity: 1; transform: translateX(0); }
+  /* ---------- entrance animation: staggered cascade ---------- */
+  .screen > * { animation: fadeup .5s cubic-bezier(.2,.7,.3,1) both; }
+  .screen > *:nth-child(1) { animation-delay: 0s; }
+  .screen > *:nth-child(2) { animation-delay: .05s; }
+  .screen > *:nth-child(3) { animation-delay: .1s; }
+  .screen > *:nth-child(4) { animation-delay: .15s; }
+  .screen > *:nth-child(5) { animation-delay: .2s; }
+  .screen > *:nth-child(6) { animation-delay: .25s; }
+  .screen > *:nth-child(7) { animation-delay: .3s; }
+  .screen > *:nth-child(8) { animation-delay: .35s; }
+  .screen > *:nth-child(n+9) { animation-delay: .4s; }
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .screen { animation: none; }
-    .btn { transition: none; }
+    .screen > * { animation: none; }
+    .hero .heroimg, .cardimg .ciimg { animation: none; }
+    .btn, .photochip, .photochip .pcimg { transition: none; }
   }
 
   footer.credit {
     text-align: center;
     font-family: -apple-system, 'Segoe UI', sans-serif;
-    font-size: 12px; color: #5a749c;
-    padding: 4px 0 10px;
+    font-size: 12px; color: #44608c;
+    background: rgba(255,255,255,.75);
+    border-radius: 14px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
   }
   footer.credit b { color: var(--navy); }
+  footer.credit a, footer.credit .linklike {
+    color: var(--navy); font-weight: 600;
+    border: none; background: none; cursor: pointer;
+    font-family: inherit; font-size: inherit;
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
+
+<div id="backdrop" aria-hidden="true"></div>
 
 <header>
   <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="Oʻahu Pathfinder logo">
@@ -257,20 +377,21 @@
 
 <script>
 /* =========================================================
-   CONFIG — set your name and contact before you ship.
+   CONFIG — shown in the footer of every screen.
    ========================================================= */
 const CONFIG = {
   ownerName: "Kind Codex",
   ownerContact: "August@kindcodex.com",
   ownerPitch: "Want one for your business?",
-  version: "1.0.0",
+  version: "1.1.0",
 };
 
 /* =========================================================
    DECISION TREE — edit this data, the app rebuilds itself.
-   nodes:   question screens (big buttons)
-            go: "n/<node>" goes deeper, "r/<result>" shows an answer
-   results: answer cards (steps + local tip + watch-out + link)
+   nodes:   question screens. hero: banner photo.
+            option.go: "n/<node>" goes deeper, "r/<result>" shows an answer.
+            option.img: photo card instead of a color button.
+   results: answer cards. img: photo header.
    All external links verified live as of June 2026.
    ========================================================= */
 
@@ -279,43 +400,47 @@ const nodes = {
     q: "Who are you?",
     sub: "We'll point you to the right next step.",
     options: [
-      { label: "A Tourist",        icon: "📷", color: "teal",   go: "n/tourist"  },
-      { label: "A Business Owner", icon: "💼", color: "green",  go: "n/business" },
-      { label: "A Local",          icon: "🌴", color: "blue",   go: "n/local"    },
+      { label: "A Tourist",        icon: "📷", img: "images/sunset.jpg",  tall: true, go: "n/tourist"  },
+      { label: "A Business Owner", icon: "💼", img: "images/skyline.jpg", tall: true, go: "n/business" },
+      { label: "A Local",          icon: "🌴", img: "images/thebus.jpg",  tall: true, go: "n/local"    },
     ]
   },
 
   /* ---------------- TOURIST ---------------- */
   tourist: {
     q: "What do you need help with?",
+    hero: "images/diamondhead.jpg",
     options: [
-      { label: "Plan My Trip",       icon: "🧳", color: "teal",   go: "n/t_plan"   },
-      { label: "Things To Do Today", icon: "🏝️", color: "green",  go: "n/t_today"  },
-      { label: "Get Around",         icon: "🚌", color: "blue",   go: "n/t_around" },
-      { label: "Stay Safe",          icon: "🛟", color: "coral",  go: "n/t_safe"   },
-      { label: "Respect the Island", icon: "🌺", color: "purple", go: "n/t_respect"},
+      { label: "Plan My Trip",       icon: "🧳", img: "images/hanauma.jpg",    go: "n/t_plan"   },
+      { label: "Things To Do Today", icon: "🏝️", img: "images/lanikai.jpg",    go: "n/t_today"  },
+      { label: "Get Around",         icon: "🚌", img: "images/thebus.jpg",     go: "n/t_around" },
+      { label: "Stay Safe",          icon: "🛟", img: "images/northshore.jpg", go: "n/t_safe"   },
+      { label: "Respect the Island", icon: "🌺", img: "images/hibiscus.jpg",   go: "n/t_respect"},
     ]
   },
   t_plan: {
     q: "How long are you here?",
+    hero: "images/hanauma.jpg",
     options: [
-      { label: "First Time, 1 Day",    icon: "☀️", color: "teal",   go: "r/oneday"   },
-      { label: "3 Days",               icon: "🗓️", color: "green",  go: "r/threeday" },
-      { label: "A Week or More",       icon: "🏖️", color: "blue",   go: "r/week"     },
-      { label: "Where Should I Stay?", icon: "🏨", color: "purple", go: "r/stay"     },
+      { label: "First Time, 1 Day",    icon: "☀️", img: "images/diamondhead.jpg", go: "r/oneday"   },
+      { label: "3 Days",               icon: "🗓️", img: "images/northshore.jpg",  go: "r/threeday" },
+      { label: "A Week or More",       icon: "🏖️", img: "images/pearlharbor.jpg", go: "r/week"     },
+      { label: "Where Should I Stay?", icon: "🏨", img: "images/sunset.jpg",      go: "r/stay"     },
     ]
   },
   t_today: {
     q: "What sounds good today?",
+    hero: "images/lanikai.jpg",
     options: [
-      { label: "Beach Day",      icon: "🏄", color: "teal",  go: "r/beach" },
-      { label: "Local Food",     icon: "🍽️", color: "coral", go: "r/food"  },
-      { label: "Go for a Hike",  icon: "⛰️", color: "green", go: "r/hike"  },
-      { label: "Rainy Day Plan", icon: "🌧️", color: "blue",  go: "r/rainy" },
+      { label: "Beach Day",      icon: "🏄", img: "images/kailua.jpg",   go: "r/beach" },
+      { label: "Local Food",     icon: "🍽️", img: "images/food.jpg",     go: "r/food"  },
+      { label: "Go for a Hike",  icon: "⛰️", img: "images/hike.jpg",     go: "r/hike"  },
+      { label: "Rainy Day Plan", icon: "🌧️", img: "images/hibiscus.jpg", go: "r/rainy" },
     ]
   },
   t_around: {
     q: "How are you getting around?",
+    hero: "images/thebus.jpg",
     options: [
       { label: "No Car — Help!",     icon: "🚶", color: "teal",  go: "r/nocar"   },
       { label: "Airport to Waikīkī", icon: "✈️", color: "blue",  go: "r/airport" },
@@ -324,6 +449,7 @@ const nodes = {
   },
   t_safe: {
     q: "Stay safe out there",
+    hero: "images/northshore.jpg",
     options: [
       { label: "Beach & Surf Conditions", icon: "🌊", color: "teal",  go: "r/surfsafety" },
       { label: "Emergency Info",          icon: "🚨", color: "coral", go: "r/emergency"  },
@@ -331,15 +457,17 @@ const nodes = {
   },
   t_respect: {
     q: "Travel with aloha",
+    hero: "images/hibiscus.jpg",
     options: [
       { label: "Local Etiquette 101",   icon: "🤙", color: "purple", go: "r/etiquette" },
-      { label: "Volunteer / Give Back", icon: "🌱", color: "green",  go: "r/malama"    },
+      { label: "Volunteer / Give Back", icon: "🌱", img: "images/kailua.jpg", go: "r/malama" },
     ]
   },
 
   /* ---------------- BUSINESS OWNER ---------------- */
   business: {
     q: "What do you need help with?",
+    hero: "images/skyline.jpg",
     options: [
       { label: "Start a Business",    icon: "🏪", color: "teal",   go: "n/b_start"  },
       { label: "Get More Customers",  icon: "📣", color: "green",  go: "n/b_grow"   },
@@ -351,6 +479,7 @@ const nodes = {
   b_start: {
     q: "Start a business",
     sub: "In the right order — takes about a week total.",
+    hero: "images/skyline.jpg",
     options: [
       { label: "Register the Business", icon: "📝", color: "teal",  go: "r/register"   },
       { label: "Get Your GET License",  icon: "🧾", color: "green", go: "r/getlicense" },
@@ -360,6 +489,7 @@ const nodes = {
   b_grow: {
     q: "How do you want to grow?",
     sub: "Get more customers.",
+    hero: "images/shaveice.jpg",
     options: [
       { label: "Google Business Profile", icon: "🔍", color: "blue",   go: "n/biztype"  },
       { label: "Website Audit",           icon: "🖥️", color: "teal",   go: "r/website"  },
@@ -371,6 +501,7 @@ const nodes = {
   biztype: {
     q: "What kind of business are you?",
     sub: "Customize your next steps.",
+    hero: "images/food.jpg",
     options: [
       { label: "Dentist",     icon: "🦷", color: "teal",   go: "r/gbp_dentist"    },
       { label: "Contractor",  icon: "🔨", color: "green",  go: "r/gbp_contractor" },
@@ -381,6 +512,7 @@ const nodes = {
   },
   b_comply: {
     q: "Stay compliant",
+    hero: "images/skyline.jpg",
     options: [
       { label: "Annual Report Filing", icon: "📅", color: "purple", go: "r/annualreport" },
       { label: "GET Tax Filing",       icon: "🧾", color: "teal",   go: "r/getfiling"    },
@@ -390,6 +522,7 @@ const nodes = {
   /* ---------------- LOCAL ---------------- */
   local: {
     q: "What do you need help with?",
+    hero: "images/kailua.jpg",
     options: [
       { label: "City Stuff (DMV, ID)", icon: "🪪", color: "teal",   go: "n/l_city"    },
       { label: "Trash & Bulky Items",  icon: "🗑️", color: "green",  go: "n/l_trash"   },
@@ -400,6 +533,7 @@ const nodes = {
   },
   l_city: {
     q: "City services",
+    hero: "images/thebus.jpg",
     options: [
       { label: "Driver's License / State ID", icon: "🪪", color: "teal", go: "r/license" },
       { label: "Vehicle Registration",        icon: "🚗", color: "blue", go: "r/vehicle" },
@@ -407,6 +541,7 @@ const nodes = {
   },
   l_trash: {
     q: "Trash & recycling",
+    hero: "images/kailua.jpg",
     options: [
       { label: "Bulky Item Pickup",   icon: "🛋️", color: "green", go: "r/bulky"    },
       { label: "Collection Schedule", icon: "📅", color: "teal",  go: "r/trashday" },
@@ -417,7 +552,7 @@ const nodes = {
 const results = {
   /* ---- tourist ---- */
   oneday: {
-    title: "Your Perfect First Day", meta: "⏱ Full day · 💵 ~$30–60 pp + food",
+    title: "Your Perfect First Day", img: "images/diamondhead.jpg", meta: "⏱ Full day · 💵 ~$30–60 pp + food",
     steps: [
       "Sunrise or early morning: Diamond Head hike — reserve online first, out-of-state visitors need a reservation.",
       "Late morning: Waikīkī Beach swim + plate lunch nearby.",
@@ -429,7 +564,7 @@ const results = {
     link: { label: "Reserve Diamond Head →", url: "https://gostateparks.hawaii.gov/diamondhead" }
   },
   threeday: {
-    title: "3-Day Game Plan", meta: "⏱ 3 days · best mix of town + country",
+    title: "3-Day Game Plan", img: "images/northshore.jpg", meta: "⏱ 3 days · best mix of town + country",
     steps: [
       "Day 1: Waikīkī + Diamond Head + sunset on the beach.",
       "Day 2: North Shore loop — Haleʻiwa town, garlic shrimp trucks, Waimea Bay (summer swim, winter watch the big waves).",
@@ -440,7 +575,7 @@ const results = {
     link: { label: "Oʻahu travel guide →", url: "https://www.gohawaii.com/islands/oahu" }
   },
   week: {
-    title: "A Week of Aloha", meta: "⏱ 7 days · you can slow down",
+    title: "A Week of Aloha", img: "images/pearlharbor.jpg", meta: "⏱ 7 days · you can slow down",
     steps: [
       "Split your stay: 4 nights Waikīkī, 3 nights North Shore or Koʻolina.",
       "Add: Pearl Harbor — tickets release 8 weeks ahead at 3pm HST on a rolling window ($1 fee, all ages need reservations).",
@@ -452,7 +587,7 @@ const results = {
     link: { label: "Pearl Harbor tickets →", url: "https://www.recreation.gov/ticket/facility/233338" }
   },
   stay: {
-    title: "Where Should I Stay?", meta: "🏨 Pick by vibe, not by deal",
+    title: "Where Should I Stay?", img: "images/sunset.jpg", meta: "🏨 Pick by vibe, not by deal",
     steps: [
       "Waikīkī — first-timers. Walk everywhere, no car needed.",
       "Koʻolina — resort-quiet, families, west side sunsets.",
@@ -464,7 +599,7 @@ const results = {
     link: { label: "Browse Oʻahu regions →", url: "https://www.gohawaii.com/islands/oahu" }
   },
   beach: {
-    title: "Best Beach Today", meta: "🏖️ Check conditions FIRST, then pick",
+    title: "Best Beach Today", img: "images/lanikai.jpg", meta: "🏖️ Check conditions FIRST, then pick",
     steps: [
       "Open Safe Beach Day (link below) and check today's hazard ratings for Oʻahu beaches.",
       "Calm + family: Ko Olina lagoons or Waikīkī.",
@@ -476,7 +611,7 @@ const results = {
     link: { label: "Live beach conditions →", url: "https://safebeachday.com" }
   },
   food: {
-    title: "Eat Like a Local", meta: "🍽️ $ to $$ — skip the resort restaurants",
+    title: "Eat Like a Local", img: "images/food.jpg", meta: "🍽️ $ to $$ — skip the resort restaurants",
     steps: [
       "Plate lunch: any 'mixed plate' spot — two scoops rice, mac salad.",
       "Poke: buy it from a grocery store seafood counter (yes, really — locals do).",
@@ -488,7 +623,7 @@ const results = {
     link: { label: "Oʻahu dining guide →", url: "https://www.gohawaii.com/islands/oahu" }
   },
   hike: {
-    title: "Pick Your Hike", meta: "⛰️ Sorted by effort",
+    title: "Pick Your Hike", img: "images/hike.jpg", meta: "⛰️ Sorted by effort",
     steps: [
       "Easy + iconic: Diamond Head (reserve first) or Makapuʻu Lighthouse (paved, whales in winter).",
       "Moderate: Kuliʻouʻou Ridge — forest then a knockout summit view.",
@@ -500,7 +635,7 @@ const results = {
     link: { label: "Official trail info →", url: "https://hawaiitrails.ehawaii.gov" }
   },
   rainy: {
-    title: "Rainy Day Plan", meta: "🌧️ Rain on one side ≠ rain everywhere",
+    title: "Rainy Day Plan", img: "images/hibiscus.jpg", meta: "🌧️ Rain on one side ≠ rain everywhere",
     steps: [
       "First: check the radar — Oʻahu rain is usually one side of the island. Drive 20 min and it's sunny.",
       "Bishop Museum — world-class Hawaiian history and culture.",
@@ -512,7 +647,7 @@ const results = {
     link: { label: "Honolulu forecast & radar →", url: "https://www.weather.gov/hfo/" }
   },
   nocar: {
-    title: "No Car? No Problem", meta: "🚶 Waikīkī is built for this",
+    title: "No Car? No Problem", img: "images/thebus.jpg", meta: "🚶 Waikīkī is built for this",
     steps: [
       "Stay in Waikīkī — beach, food, and nightlife all walkable.",
       "TheBus goes everywhere for $3 (HOLO card). Route 8 = Ala Moana, Route 23 = Sea Life Park coast.",
@@ -524,7 +659,7 @@ const results = {
     link: { label: "TheBus routes & fares →", url: "https://www.thebus.org" }
   },
   airport: {
-    title: "Airport → Waikīkī", meta: "✈️ 3 ways, by budget",
+    title: "Airport → Waikīkī", img: "images/skyline.jpg", meta: "✈️ 3 ways, by budget",
     steps: [
       "Cheapest: TheBus Route 20/23 — $3, but one bag rule (must fit on your lap).",
       "Easy: Rideshare/taxi — $35–50, 25–40 min depending on traffic.",
@@ -535,7 +670,7 @@ const results = {
     link: { label: "HNL airport transport →", url: "https://airports.hawaii.gov/hnl/getting-to-from/" }
   },
   thebus: {
-    title: "TheBus & Skyline Basics", meta: "🚌 $3 flat · HOLO card",
+    title: "TheBus & Skyline Basics", img: "images/thebus.jpg", meta: "🚌 $3 flat · HOLO card",
     steps: [
       "Buy a HOLO card ($2) at ABC Stores, 7-Eleven, or satellite city halls.",
       "Tap on every boarding — fares auto-cap daily.",
@@ -547,7 +682,7 @@ const results = {
     link: { label: "Plan a route →", url: "https://www.thebus.org" }
   },
   surfsafety: {
-    title: "Ocean Safety Check", meta: "🌊 60 seconds, every time",
+    title: "Ocean Safety Check", img: "images/northshore.jpg", meta: "🌊 60 seconds, every time",
     steps: [
       "Check Safe Beach Day for today's ratings on your beach.",
       "Swim at lifeguarded beaches. Ask the lifeguard — they love being asked.",
@@ -559,7 +694,7 @@ const results = {
     link: { label: "Live conditions →", url: "https://safebeachday.com" }
   },
   emergency: {
-    title: "Emergency Info", meta: "🚨 Save this screen",
+    title: "Emergency Info", img: "images/hanauma.jpg", meta: "🚨 Save this screen",
     steps: [
       "Emergency: 911 (works everywhere, including beaches and trails).",
       "Ocean rescue: tell 911 'ocean emergency' + nearest beach name.",
@@ -571,7 +706,7 @@ const results = {
     link: { label: "Sign up: HNL Alert →", url: "https://hnlalert.gov" }
   },
   etiquette: {
-    title: "Don't Be That Tourist", meta: "🤙 The unwritten rules",
+    title: "Don't Be That Tourist", img: "images/hibiscus.jpg", meta: "🤙 The unwritten rules",
     steps: [
       "Take your shoes off at the door. Always. No exceptions.",
       "Don't honk unless someone's about to die. Let people merge — throw a shaka.",
@@ -584,7 +719,7 @@ const results = {
     link: { label: "Travel pono →", url: "https://www.gohawaii.com/malama" }
   },
   malama: {
-    title: "Give Back (Mālama)", meta: "🌱 Some hotels discount for volunteering",
+    title: "Give Back (Mālama)", img: "images/kailua.jpg", meta: "🌱 Some hotels discount for volunteering",
     steps: [
       "Beach cleanups, reforestation, fishpond restoration, and sustainable farming projects all welcome visitors.",
       "Browse Mālama Hawaiʻi volunteer programs (link below) and book before your trip.",
@@ -597,7 +732,7 @@ const results = {
 
   /* ---- business ---- */
   register: {
-    title: "Register Your Business", meta: "⏱ ~30 min online · 💵 $50 LLC filing",
+    title: "Register Your Business", img: "images/skyline.jpg", meta: "⏱ ~30 min online · 💵 $50 LLC filing",
     steps: [
       "Search your name first on the DCCA business name search — make sure it's free.",
       "File online at Hawaiʻi Business Express (hbe.ehawaii.gov).",
@@ -609,7 +744,7 @@ const results = {
     link: { label: "Hawaiʻi Business Express →", url: "https://hbe.ehawaii.gov" }
   },
   getlicense: {
-    title: "Get Your GET License", meta: "⏱ ~20 min · 💵 $20 one-time",
+    title: "Get Your GET License", img: "images/skyline.jpg", meta: "⏱ ~20 min · 💵 $20 one-time",
     steps: [
       "Hawaiʻi has no sales tax — it has GET (General Excise Tax), and you need a license to do ANY business.",
       "Apply online at Hawaiʻi Tax Online (Form BB-1). One-time $20 fee.",
@@ -621,7 +756,7 @@ const results = {
     link: { label: "Hawaiʻi Tax Online →", url: "https://hitax.hawaii.gov" }
   },
   ein: {
-    title: "Get an EIN — Free", meta: "⏱ 10 min · 💵 $0 (never pay for this)",
+    title: "Get an EIN — Free", img: "images/skyline.jpg", meta: "⏱ 10 min · 💵 $0 (never pay for this)",
     steps: [
       "Go directly to IRS.gov — the EIN is 100% free.",
       "Apply online, get the number instantly.",
@@ -633,7 +768,7 @@ const results = {
     link: { label: "IRS EIN application →", url: "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number" }
   },
   ops: {
-    title: "Run Smoother", meta: "⚙️ Fix these in order",
+    title: "Run Smoother", img: "images/shaveice.jpg", meta: "⚙️ Fix these in order",
     steps: [
       "Missed calls = missed money. Set up a missed-call auto-text: 'Sorry we missed you! Book here: [link]'.",
       "Online booking (Square, Calendly, etc.) so customers book at midnight when they think of you.",
@@ -645,7 +780,7 @@ const results = {
     link: { label: "Free advising: Hawaiʻi SBDC →", url: "https://www.hisbdc.org" }
   },
   bizhelp: {
-    title: "Free Business Help", meta: "🤝 All of this is no-cost",
+    title: "Free Business Help", img: "images/skyline.jpg", meta: "🤝 All of this is no-cost",
     steps: [
       "Hawaiʻi SBDC — free confidential one-on-one advising, business plans, financials.",
       "SCORE Hawaiʻi — free mentors who've run businesses themselves.",
@@ -657,7 +792,7 @@ const results = {
     link: { label: "Book SBDC advising →", url: "https://www.hisbdc.org" }
   },
   website: {
-    title: "5-Minute Website Audit", meta: "🖥️ Test on your PHONE, not desktop",
+    title: "5-Minute Website Audit", img: "images/sunset.jpg", meta: "🖥️ Test on your PHONE, not desktop",
     steps: [
       "Load your site on your phone. Slow = customers gone (most leave after 3 seconds).",
       "Can a stranger tell what you do + where you are + how to book within 5 seconds?",
@@ -669,7 +804,7 @@ const results = {
     link: { label: "Test your site speed →", url: "https://pagespeed.web.dev" }
   },
   reviews: {
-    title: "Reviews & Photos Engine", meta: "⭐ The #1 local ranking factor",
+    title: "Reviews & Photos Engine", img: "images/shaveice.jpg", meta: "⭐ The #1 local ranking factor",
     steps: [
       "Get your short Google review link from your Business Profile dashboard.",
       "Ask at the happy moment — job done, meal finished, smile on face.",
@@ -682,7 +817,7 @@ const results = {
     link: { label: "Google Business Profile →", url: "https://google.com/business" }
   },
   leads: {
-    title: "Capture Leads Before They Leave", meta: "🧲 Most visitors leave without calling",
+    title: "Capture Leads Before They Leave", img: "images/food.jpg", meta: "🧲 Most visitors leave without calling",
     steps: [
       "Add one offer to your site: '$X off first visit' or 'Free quote in 24 hours'.",
       "Collect name + phone only. Every extra field costs you signups.",
@@ -694,7 +829,7 @@ const results = {
     link: { label: "Free advising: SBDC →", url: "https://www.hisbdc.org" }
   },
   followup: {
-    title: "Follow-Up System", meta: "📨 Where the real money is",
+    title: "Follow-Up System", img: "images/sunset.jpg", meta: "📨 Where the real money is",
     steps: [
       "Same day: thank-you text after every job/visit.",
       "Day 3: review ask with your direct link.",
@@ -706,7 +841,7 @@ const results = {
     link: { label: "Free advising: SBDC →", url: "https://www.hisbdc.org" }
   },
   annualreport: {
-    title: "Annual Report Filing", meta: "📅 ~$15 · takes 10 minutes",
+    title: "Annual Report Filing", img: "images/skyline.jpg", meta: "📅 ~$15 · takes 10 minutes",
     steps: [
       "Every Hawaiʻi business files an annual report with DCCA in its anniversary quarter.",
       "File online at Hawaiʻi Business Express — it takes minutes.",
@@ -718,7 +853,7 @@ const results = {
     link: { label: "File annual report →", url: "https://hbe.ehawaii.gov" }
   },
   getfiling: {
-    title: "GET Tax Filing", meta: "🧾 Monthly, quarterly, or semiannual",
+    title: "GET Tax Filing", img: "images/skyline.jpg", meta: "🧾 Monthly, quarterly, or semiannual",
     steps: [
       "Your filing frequency was assigned when you got the license (based on estimated tax).",
       "File on Hawaiʻi Tax Online — even $0 periods must be filed.",
@@ -732,7 +867,7 @@ const results = {
 
   /* ---- GBP by business type ---- */
   gbp_dentist: {
-    title: "Google Profile: Dentist", meta: "🦷 Patients search 'dentist near me' — win that",
+    title: "Google Profile: Dentist", img: "images/lanikai.jpg", meta: "🦷 Patients search 'dentist near me' — win that",
     steps: [
       "Claim/verify at google.com/business. Category: 'Dentist' primary, add 'Cosmetic dentist' etc. as secondary.",
       "Add services with prices or 'call for quote': cleanings, whitening, implants, emergency.",
@@ -745,7 +880,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_contractor: {
-    title: "Google Profile: Contractor", meta: "🔨 Reviews + photos win bids before you quote",
+    title: "Google Profile: Contractor", img: "images/diamondhead.jpg", meta: "🔨 Reviews + photos win bids before you quote",
     steps: [
       "Claim profile. Primary category = your main trade (e.g., 'General contractor').",
       "Set your service AREA (towns you serve), not just an address.",
@@ -758,7 +893,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_restaurant: {
-    title: "Google Profile: Restaurant", meta: "🍴 Your profile IS your menu now",
+    title: "Google Profile: Restaurant", img: "images/food.jpg", meta: "🍴 Your profile IS your menu now",
     steps: [
       "Claim profile. Upload the FULL menu with prices — keep it current.",
       "Photos of your 5 best dishes, shot in daylight. These decide more visits than your sign.",
@@ -771,7 +906,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_salon: {
-    title: "Google Profile: Salon", meta: "✂️ Instagram gets likes, Google gets bookings",
+    title: "Google Profile: Salon", img: "images/shaveice.jpg", meta: "✂️ Instagram gets likes, Google gets bookings",
     steps: [
       "Claim profile. Add every service with prices — people compare before booking.",
       "Connect online booking (Square, Booksy, etc.) so they book straight from Google.",
@@ -784,7 +919,7 @@ const results = {
     link: { label: "Claim your profile →", url: "https://google.com/business" }
   },
   gbp_retail: {
-    title: "Google Profile: Retail Shop", meta: "🛍️ Win 'open now near me' searches",
+    title: "Google Profile: Retail Shop", img: "images/skyline.jpg", meta: "🛍️ Win 'open now near me' searches",
     steps: [
       "Claim profile. Exact hours, exact location pin (check the map pin yourself).",
       "Add products with photos — Google shows them in searches.",
@@ -799,7 +934,7 @@ const results = {
 
   /* ---- local ---- */
   license: {
-    title: "Driver's License / State ID", meta: "🪪 Appointments beat walk-ins",
+    title: "Driver's License / State ID", img: "images/thebus.jpg", meta: "🪪 Appointments beat walk-ins",
     steps: [
       "Book an appointment via the Customer Services site — walk-in waits run hours.",
       "Renewal: do it online if eligible — skip the trip entirely.",
@@ -811,7 +946,7 @@ const results = {
     link: { label: "Honolulu Customer Services →", url: "https://www.honolulu.gov/csd" }
   },
   vehicle: {
-    title: "Vehicle Registration", meta: "🚗 Renew online, skip the line",
+    title: "Vehicle Registration", img: "images/thebus.jpg", meta: "🚗 Renew online, skip the line",
     steps: [
       "Renew online via the Customer Services site — emblem mails to you.",
       "Safety check first if expired — registration renewal requires a current one.",
@@ -823,7 +958,7 @@ const results = {
     link: { label: "Renew online →", url: "https://www.honolulu.gov/csd" }
   },
   bulky: {
-    title: "Bulky Item Pickup", meta: "🛋️ Free, but appointment required",
+    title: "Bulky Item Pickup", img: "images/kailua.jpg", meta: "🛋️ Free, but appointment required",
     steps: [
       "Book online at opala.org — pickups are by appointment now, not a set monthly day.",
       "Put items out no earlier than 6pm the night before your date.",
@@ -835,7 +970,7 @@ const results = {
     link: { label: "Book bulky pickup →", url: "https://opala.org" }
   },
   trashday: {
-    title: "Trash & Recycling Schedule", meta: "🗑️ Gray, blue, green carts",
+    title: "Trash & Recycling Schedule", img: "images/kailua.jpg", meta: "🗑️ Gray, blue, green carts",
     steps: [
       "Look up your address schedule at opala.org.",
       "Gray = trash (weekly), Blue = mixed recycling, Green = green waste (alternating weeks).",
@@ -847,7 +982,7 @@ const results = {
     link: { label: "Find your schedule →", url: "https://opala.org" }
   },
   report: {
-    title: "Report a City Problem", meta: "📢 Potholes, streetlights, dumping",
+    title: "Report a City Problem", img: "images/skyline.jpg", meta: "📢 Potholes, streetlights, dumping",
     steps: [
       "Report at hnl311.com or download the HNL 311 app — the city's new system routes 70+ categories to the right department.",
       "Snap a photo, pin the location, pick a category. Two minutes.",
@@ -859,7 +994,7 @@ const results = {
     link: { label: "HNL 311 →", url: "https://hnl311.com" }
   },
   hnlalert: {
-    title: "Emergency Alerts (HNL Alert)", meta: "🚨 2 minutes, could save your life",
+    title: "Emergency Alerts (HNL Alert)", img: "images/northshore.jpg", meta: "🚨 2 minutes, could save your life",
     steps: [
       "Sign up at hnlalert.gov — text + email alerts from the city.",
       "Choose your neighborhoods (home, work, kids' school).",
@@ -871,7 +1006,7 @@ const results = {
     link: { label: "Sign up →", url: "https://hnlalert.gov" }
   },
   help211: {
-    title: "Find Help — Dial 211", meta: "🤝 Free, confidential, statewide",
+    title: "Find Help — Dial 211", img: "images/hibiscus.jpg", meta: "🤝 Free, confidential, statewide",
     steps: [
       "Aloha United Way 211 connects you to food, housing, utility, childcare, senior, and crisis resources.",
       "Call or text 211, or search their online directory.",
@@ -899,6 +1034,24 @@ const alertLinks = [
   { label: "TheBus service updates",       icon: "🚌", color: "green", url: "https://www.thebus.org" },
 ];
 
+/* Photo credits — Wikimedia Commons. Required attribution for CC-BY/CC-BY-SA images. */
+const PHOTO_CREDITS = [
+  { img: "images/bg.jpg",          artist: "Frank Schulenburg",                       license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Waikiki_Beach_(2024)-L1004709.jpg" },
+  { img: "images/diamondhead.jpg", artist: "Matt Kieffer",                            license: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Diamond_Head_Crater_Park.jpg" },
+  { img: "images/lanikai.jpg",     artist: "claralieu",                               license: "CC BY 2.0",    url: "https://commons.wikimedia.org/wiki/File:Lanikai_Beach_09.jpg" },
+  { img: "images/hanauma.jpg",     artist: "Diego Delso",                             license: "CC BY-SA 3.0", url: "https://commons.wikimedia.org/wiki/File:Hanauma_Bay,_Oahu,_Hawaii,_USA2.jpg" },
+  { img: "images/food.jpg",        artist: "christian razukas",                       license: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Wardsplatelunch.jpg" },
+  { img: "images/shaveice.jpg",    artist: "Kim",                                     license: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Fumi%27s_Shave_Ice_(3848642715).jpg" },
+  { img: "images/hike.jpg",        artist: "Daniel Ramirez",                          license: "CC BY 2.0",    url: "https://commons.wikimedia.org/wiki/File:Manoa_Falls_Trail_(8330330105).jpg" },
+  { img: "images/skyline.jpg",     artist: "Mcmrose",                                 license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Waikiki-waikiki-beach-aerial-photography_2.jpg" },
+  { img: "images/pearlharbor.jpg", artist: "U.S. Navy / PH3 Jayme Pastoric",          license: "Public domain", url: "https://commons.wikimedia.org/wiki/File:USS_Arizona_Memorial_(aerial_view).jpg" },
+  { img: "images/hibiscus.jpg",    artist: "Pseudopanax",                             license: "Public domain", url: "https://commons.wikimedia.org/wiki/File:Hawaiian_hibiscus_(Hibiscus_x_rosa-sinensis)_flower_and_leaves_(Niue).jpg" },
+  { img: "images/sunset.jpg",      artist: "Diego Delso",                             license: "CC BY-SA 3.0", url: "https://commons.wikimedia.org/wiki/File:Sunset_next_to_Waikiki_Beach,_Oahu,_Hawai,_USA1.jpg" },
+  { img: "images/kailua.jpg",      artist: "Tony Webster",                            license: "CC BY 2.0",    url: "https://commons.wikimedia.org/wiki/File:Kailua_Beach_Park_-_Oahu_-_Hawaii.jpg" },
+  { img: "images/northshore.jpg",  artist: "Johannes Andersson",                      license: "CC0",          url: "https://commons.wikimedia.org/wiki/File:Surfing_in_the_blue_(Unsplash).jpg" },
+  { img: "images/thebus.jpg",      artist: "eli fessler",                             license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Honolulu_Skyline_train.jpg" },
+];
+
 /* =========================================================
    Saved items (localStorage)
    ========================================================= */
@@ -915,25 +1068,39 @@ function toggleSave(id) {
   const i = list.indexOf(id);
   if (i >= 0) list.splice(i, 1); else list.push(id);
   setSaved(list);
-  render(); // refresh heart state / saved list
+  render();
 }
 
 /* =========================================================
    Hash router — history-friendly, deep-linkable.
-   #n/<node>  question screen
-   #r/<result> answer card
-   #t/<tab>   home | explore | alerts | saved
    ========================================================= */
 const main = document.getElementById("main");
 
 function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
 
-function chip(opt, small) {
-  return `<button class="btn ${opt.color}${small ? " small" : ""}" data-go="${opt.go}">
+function chip(opt) {
+  if (opt.img) {
+    return `<button class="photochip${opt.tall ? " tall" : ""}" data-go="${opt.go}">
+      <span class="pcimg" style="background-image:url('${opt.img}')"></span>
+      <span class="pcshade"></span>
+      <span class="pcicon" aria-hidden="true">${opt.icon}</span>
+      <span class="pclabel">${esc(opt.label)}</span>
+      <span class="pcchev" aria-hidden="true">›</span>
+    </button>`;
+  }
+  return `<button class="btn ${opt.color}" data-go="${opt.go}">
     <span class="icon" aria-hidden="true">${opt.icon}</span>
     <span class="label">${esc(opt.label)}</span>
     <span class="chev" aria-hidden="true">›</span>
   </button>`;
+}
+
+function hero(imgUrl, title) {
+  return `<div class="hero">
+    <div class="heroimg" style="background-image:url('${imgUrl}')"></div>
+    <div class="heroshade"></div>
+    <h2 class="herotitle">${esc(title)}</h2>
+  </div>`;
 }
 
 function backRow() {
@@ -942,7 +1109,8 @@ function backRow() {
 
 function credit() {
   return `<footer class="credit">Built with aloha by <b>${esc(CONFIG.ownerName)}</b> · ${esc(CONFIG.ownerPitch)}
-    <a href="mailto:${CONFIG.ownerContact}" style="color:var(--navy);font-weight:600">${CONFIG.ownerContact}</a></footer>`;
+    <a href="mailto:${CONFIG.ownerContact}">${CONFIG.ownerContact}</a>
+    · <button class="linklike" data-go="t/credits">Photo credits</button></footer>`;
 }
 
 function drawNode(id, isHome) {
@@ -950,9 +1118,9 @@ function drawNode(id, isHome) {
   if (!n) return drawNode("root", true);
   main.innerHTML = `<div class="screen">
     ${isHome ? "" : backRow()}
-    <h2 class="question">${esc(n.q)}</h2>
-    <p class="sub">${esc(n.sub || "")}</p>
-    ${n.options.map((o) => chip(o)).join("")}
+    ${n.hero ? hero(n.hero, n.q) : `<h2 class="question">${esc(n.q)}</h2>`}
+    ${n.sub || !n.hero ? `<p class="sub">${esc(n.sub || "")}</p>` : ""}
+    ${n.options.map(chip).join("")}
     ${isHome ? credit() : ""}
   </div>`;
   main.scrollTop = 0;
@@ -965,15 +1133,19 @@ function drawResult(id) {
   main.innerHTML = `<div class="screen">
     ${backRow()}
     <article class="card">
-      <div class="cardtop">
+      <div class="cardimg">
+        <div class="ciimg" style="background-image:url('${r.img}')"></div>
+        <div class="cishade"></div>
         <h2>${esc(r.title)}</h2>
         <button class="savebtn" data-save="${id}" aria-pressed="${saved}">${saved ? "❤️ Saved" : "🤍 Save"}</button>
       </div>
-      <div class="meta">${esc(r.meta)}</div>
-      <ol>${r.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
-      <div class="tip"><b>🤙 Local tip</b>${esc(r.tip)}</div>
-      <div class="watch"><b>⚠️ Watch out</b>${esc(r.watch)}</div>
-      <a class="linkbtn" href="${r.link.url}" target="_blank" rel="noopener">${esc(r.link.label)}</a>
+      <div class="cardbody">
+        <div class="meta">${esc(r.meta)}</div>
+        <ol>${r.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
+        <div class="tip"><b>🤙 Local tip</b>${esc(r.tip)}</div>
+        <div class="watch"><b>⚠️ Watch out</b>${esc(r.watch)}</div>
+        <a class="linkbtn" href="${r.link.url}" target="_blank" rel="noopener">${esc(r.link.label)}</a>
+      </div>
     </article>
     ${credit()}
   </div>`;
@@ -1009,10 +1181,12 @@ function drawAlerts() {
         <span class="label">${esc(a.label)}</span>
         <span class="chev" aria-hidden="true">↗</span>
       </a>`).join("")}
-    <button class="btn coral" data-go="r/emergency">
-      <span class="icon" aria-hidden="true">🚨</span>
-      <span class="label">Emergency basics</span>
-      <span class="chev" aria-hidden="true">›</span>
+    <button class="photochip" data-go="r/emergency">
+      <span class="pcimg" style="background-image:url('images/northshore.jpg')"></span>
+      <span class="pcshade"></span>
+      <span class="pcicon" aria-hidden="true">🚨</span>
+      <span class="pclabel">Emergency basics</span>
+      <span class="pcchev" aria-hidden="true">›</span>
     </button>
     ${credit()}
   </div>`;
@@ -1026,12 +1200,29 @@ function drawSavedTab() {
     <p class="sub">Your bookmarked answers — stored on this device.</p>
     ${list.length
       ? list.map((id) => results[id] ? `
-        <button class="btn small navybtn" data-go="r/${id}">
-          <span class="icon" aria-hidden="true">❤️</span>
-          <span class="label">${esc(results[id].title)}</span>
-          <span class="chev" aria-hidden="true">›</span>
+        <button class="photochip" data-go="r/${id}">
+          <span class="pcimg" style="background-image:url('${results[id].img}')"></span>
+          <span class="pcshade"></span>
+          <span class="pcicon" aria-hidden="true">❤️</span>
+          <span class="pclabel">${esc(results[id].title)}</span>
+          <span class="pcchev" aria-hidden="true">›</span>
         </button>` : "").join("")
       : `<div class="empty">Nothing saved yet.<br>Open any answer and tap 🤍 Save to keep it here.</div>`}
+    ${credit()}
+  </div>`;
+  main.scrollTop = 0;
+}
+
+function drawCredits() {
+  main.innerHTML = `<div class="screen">
+    ${backRow()}
+    <h2 class="question">Photo credits</h2>
+    <p class="sub">Photography via Wikimedia Commons — mahalo to these photographers.</p>
+    ${PHOTO_CREDITS.map((c) => `
+      <a class="creditrow" href="${c.url}" target="_blank" rel="noopener">
+        <img src="${c.img}" alt="" loading="lazy">
+        <span><b>${esc(c.artist)}</b>${esc(c.license)} · Wikimedia Commons</span>
+      </a>`).join("")}
     ${credit()}
   </div>`;
   main.scrollTop = 0;
@@ -1054,6 +1245,7 @@ function render() {
   else if (id === "explore") { drawExplore(); syncNav("nav-explore"); }
   else if (id === "alerts") { drawAlerts(); syncNav("nav-alerts"); }
   else if (id === "saved") { drawSavedTab(); syncNav("nav-saved"); }
+  else if (id === "credits") { drawCredits(); syncNav("nav-home"); }
   else { drawNode("root", true); syncNav("nav-home"); }
 }
 
